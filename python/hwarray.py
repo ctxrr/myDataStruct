@@ -1,7 +1,8 @@
 import ctypes
 
+'''Definition of class hwarray'''
 class hwarray:
-
+    'array by hw'
     def __init__(self):
         self.size=0
         self.capacity=1
@@ -9,6 +10,9 @@ class hwarray:
 
     def Size(self):
         return self.size
+
+    def __getitem__(self,num):
+        return self.Get(num)
 
     '''print the array'''
     def Show(self):
@@ -39,6 +43,15 @@ class hwarray:
             self.Rebuild(2*self.capacity)
         self.A[self.size]=obj
         self.size+=1
+
+    def Find(self,obj):
+        findinfo=0
+        for i in range(self.size):
+            if self.A[i]==obj:
+                findinfo+=1
+                print "Find No %d element! Index is %d" %(findinfo,i)  
+        if findinfo==0:
+            print 'value not found'    
 
     '''found the obj in array and delete it if exist'''
     def Del(self,obj):
@@ -72,3 +85,13 @@ class hwarray:
 
     def MakeArray(self,number):
         return (number*ctypes.py_object)()
+
+'''Test code from here.....'''
+a=hwarray()
+a.Add(100)
+a.Add(200)
+a.Add(300)
+a.Add(100)
+a.Show()
+a.Find(100)
+print a[1]
