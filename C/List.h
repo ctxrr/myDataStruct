@@ -1,4 +1,6 @@
 #ifndef _List_H
+#define _List_H
+#include "myList.h"
 
 struct Node;
 typedef struct Node *PtrToNode;

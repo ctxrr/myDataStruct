@@ -1,4 +1,6 @@
 #include "List.h"
+#include<stdlib.h>
+#include<stdio.h>
 
 struct Node
 {
@@ -8,7 +10,7 @@ struct Node
 
 int IsEmpty(List L)
 {
-    return P->Next ==NULL;
+    return L->Next ==NULL;
 }
 
 int IsLast(Position P,List L)
@@ -57,8 +59,8 @@ void Insert(ElementType X,List L,Position P)
     Position TmpCell;
 
     TmpCell = malloc(sizeof(struct Node));
-    if(TmpCell==NULL)
-        FatalError("Out of space!!!");
+    if(TmpCell==0)
+        /*FatalError("Out of space!!!");*/
 
     TmpCell->Element = X;
     TmpCell->Next = P->Next;
