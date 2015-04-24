@@ -21,6 +21,14 @@ class DynamicArray:
         self.A[self.n]=obj
         self.n+=1
 
+    def pop(self):
+        if self.n==0:
+            print "can't pop from an empty array"
+            return 0
+        if self.n==self.capacity/4:
+            self._resize(self.capacity/2)
+        self.n-=1
+
     def _resize(self,c):
         B=self.MakeArray(c)
         for k in range(self.n):
