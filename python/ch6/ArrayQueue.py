@@ -38,5 +38,7 @@ class ArrayQueue:
         """
         if self.is_empty():
             raise Empty('Queue is empty')
+        ret=self._data[self._index]
+        self._data[self._index]=None
         self._index += 1
-        return self._data[self._index-1]
+        return ret
