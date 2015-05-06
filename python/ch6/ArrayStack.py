@@ -149,6 +149,20 @@ def is_matched(expr):
                 return False # mismatched
     return S.is_empty() # were all symbols matched?
 
+def reverse_file(filename):
+    """Overwrite given file with its contents line-by-line reversed."""
+    S = ArrayStack()
+    original = open(filename)
+    for line in original:
+        print type(line)
+        S.push(line.rstrip('\n')) # we will re-insert newlines when writing
+    original.close()
+    # now we overwrite with contents in LIFO order
+    output = open(filename, 'w') # reopening file overwrites original
+    while not S.is_empty():
+        output.write(S.pop() + '\n') # re-insert newline characters
+    output.close()
+
 """test code"""
 if __name__ == '__main__':    
     #test on is_matched_html and is_matched_html_new
@@ -187,3 +201,5 @@ if __name__ == '__main__':
     str_n='(abcde[])'
     print is_matched(str_m)
     print is_matched(str_n)
+    #test on reverse_file
+    #reverse_file('a')
