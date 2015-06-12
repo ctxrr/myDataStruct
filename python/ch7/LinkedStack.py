@@ -1,4 +1,6 @@
 # coding:utf-8
+"""this module contain the class LinkedStack in DSAP"""
+
 class Empty(Exception):
     """Error attempting to access an element from an empty container"""
     pass

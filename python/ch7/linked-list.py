@@ -1,4 +1,4 @@
-"""contain 2 class about linkedlist"""
+"""contain 2 class about linkedlist,this module is finished by ctxrr"""
 
 class Node():
     """a node contain a reference to the next node and a reference to its element"""

@@ -1,24 +1,26 @@
 # coding:utf-8
-"""this module contain the class LinkedQueue in DSAP"""
+"""contain 1 class about double linked list finished by ctxrr
+   But you should find this program is not very perfect and you
+   will find a better program in DoublyLinkedBase.py
+"""
 class Empty(Exception):
     """Error attempting to access an element from an empty container"""
     pass
 
-class LinkedQueue:
-    """FIFO queue implementation using a singly linked list for storage."""
+class DoubleList:
 
     #-------------------------- nested Node class --------------------------
     class _Node:
-        """Lightweight, nonpublic class for storing a singly linked node."""
-        __slots__ ='_element','_next'# streamline memory usage
+        """Lightweight, nonpublic class for storing a double linked node."""
+        __slots__ ='_element','_next','_prev'# streamline memory usage
 
-        def __init__(self,element,next):
+        def __init__(self,element,next,prev):
             self._element = element # reference to user’s element
             self._next = next # reference to next node
+            self._prev = prev # reference to prev node
 
     #------------------------------- queue methods -------------------------------
     def __init__ (self):
-        """Create an empty queue."""
         self._head = None
         self._tail = None
         self._size = 0 # number of queue elements
@@ -52,20 +54,46 @@ class LinkedQueue:
 
     def enqueue(self, e):
         """Add an element to the back of queue."""
-        newest = self._Node(e, None) # node will be new tail node
+        newest = self._Node(e, None,None) # node will be new tail node
         if self.is_empty():
             self._head = newest # special case: previously empty
         else:
             self._tail._next = newest
+        newest._prev = self._tail
         self._tail = newest # update reference to tail node
         self._size += 1
 
+    #def rotate(self):
+        #if self._size>0:
+            #self._tail = self._tail._next
+            #self._head = self._head._next
+
+    def showinfo(self):
+        start=self._head
+        print "infomation:[",
+        for i in range(self._size):
+            print start._element,
+            start=start._next
+        print "]"
+
 if __name__ == '__main__':
-    ls=LinkedQueue()
+    ls=DoubleList()
     ls.enqueue(1)
+    # print ls.first()
     ls.enqueue(2)
-    print len(ls)
-    print ls.dequeue()
-    print ls.dequeue()
+    # print ls.first()
     ls.enqueue(3)
-    print ls.dequeue()
+    # print ls.first()
+    # ls.rotate()
+    # print ls.first()
+    # ls.rotate()
+    # print ls.first()
+    # ls.rotate()
+    # print ls.first()
+    ls.showinfo()
+    # ls.rotate()
+    ls.dequeue()
+    ls.dequeue()
+    ls.dequeue()
+
+    ls.showinfo()
