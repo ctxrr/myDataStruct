@@ -45,3 +45,21 @@ class LinkedDeque(_DoublyLinkedBase): # note the use of inheritance
         if self.is_empty():
             raise Empty("Deque is empty")
         return self._delete_node(self._trailer._prev) # use inherited method
+
+    def showinfo(self):
+        """Show the infomation of the Deque"""
+        current=self._header._next
+        print 'Deque info:[',
+        for i in range(self._size):
+            print current._element,
+            current=current._next
+        print ']'
+
+if __name__ == '__main__':
+    test=LinkedDeque()
+    test.insert_first(1)
+    test.insert_first(2)
+    test.insert_last(3)
+    test.insert_last(4)
+    test.delete_last()
+    test.showinfo()
