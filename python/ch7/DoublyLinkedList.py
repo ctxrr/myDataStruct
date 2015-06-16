@@ -7,7 +7,7 @@ class Empty(Exception):
     """Error attempting to access an element from an empty container"""
     pass
 
-class _DoublyLinkedBase:
+class _DoublyLinkedBase(object):
     """A base class providing a doubly linked list representation."""
 
     class _Node:
@@ -130,7 +130,6 @@ class DoublyLinkedStack(_DoublyLinkedBase): # note the use of inheritance
         return self._delete_node(self._header._next) # use inherited method
 
 if __name__ == '__main__':
-
     """test for stack"""
     print 'test program for stack.............'
     teststack=DoublyLinkedStack()
