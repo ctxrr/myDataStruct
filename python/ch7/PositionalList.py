@@ -104,11 +104,32 @@ class PositionalList(_DoublyLinkedBase):
         original._element = e # replace with new element
         return old_value # return the old element value
 
+def insertion_sort(L):
+    """Sort PositionalList of comparable elements into nondecreasing order."""
+    if len(L) > 1: # otherwise, no need to sort it
+        marker = L.first()
+        while marker != L.last():
+            pivot = L.after(marker) # next item to place
+            value = pivot.element()
+            if value > marker.element(): # pivot is already sorted
+                marker = pivot # pivot becomes new marker
+            else: # must relocate pivot
+                walk = marker # find leftmost item greater than value
+                while walk != L.first( ) and L.before(walk).element( ) > value:
+                    walk = L.before(walk)
+                L.delete(pivot)
+                L.add_before(walk, value) # reinsert value before walk
+
 if __name__ == '__main__':
     a=PositionalList()
-    m=a.add_last(1)
-    n=a.add_first('a')
-    print m==n
-    a.add_after(m,200)
+    a.add_last(1)
+    a.add_first(100)
+    a.add_last(24)
+    a.add_first(96)
+    a.add_last(8)
+
+    for i in a:
+        print i
+    insertion_sort(a)
     for i in a:
         print i
