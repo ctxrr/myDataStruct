@@ -12,16 +12,19 @@
    ### It is recommended to use Header-Trailer model all the times.Both in single list and
    double list.
 
-   ### With _SingleLinkedBase,ctxrr implement 3 different ADT:
+   ### With _SingleLinkedBase,ctxrr re-implement 2 different ADT:
     1.LinkedStack
     2.LinkedQueue
-    3.CircularQueue
+    But there is some problem in the implementation of CircularQueue ADT,so you have to use the
+    traditional head-tail model to implement it!
 """
+#------------Class Empty--------------------------------------------------------------------------
 class Empty(Exception):
     """Error attempting to access an element from an empty container"""
     pass
 
-class _SingleLinkedBase:
+#------------Class _SingleLinkedBase--------------------------------------------------------------
+class _SingleLinkedBase(object):
     """The basic implementation of a single linked list in Header-Trailer model"""
 
     #-------------------------- nested Node class --------------------------
@@ -30,16 +33,16 @@ class _SingleLinkedBase:
         __slots__ ='_element','_next'# streamline memory usage
 
         def __init__(self,element,next):
-            self._element = element # reference to user’s element
-            self._next = next # reference to next node
+            self._element = element
+            self._next = next
 
-    #------------------------------- public methods -------------------------------
+    #------------------------- public methods -------------------------------
     def __init__ (self):
         """Create an SingleLinkedList."""
         self._header  = self._Node(None,None)
         self._trailer = self._Node(None,None)
         self._header._next = self._trailer
-        self._size = 0 # number of Singlelinkedlist elements
+        self._size = 0
 
     def __len__ (self):
         """Return the number of elements in the SingleLinkedList."""
@@ -59,7 +62,7 @@ class _SingleLinkedBase:
     def showinfo(self):
         """Show the infomation of current object"""
         start=self._header._next
-        print "List Infomation:[",
+        print "List:[",
         for i in range(self._size):
             print start._element,
             start=start._next
@@ -69,7 +72,7 @@ class _SingleLinkedBase:
         """Add an element after the header node"""
         new_node = self._Node(e,self._header._next)
         self._header._next = new_node
-        self._size+=1
+        self._size += 1
 
     def _add_back(self,e):
         """Add an element in front of the trailer node"""
@@ -77,7 +80,7 @@ class _SingleLinkedBase:
         self._trailer._next = new_trailer
         self._trailer._element = e
         self._trailer = new_trailer
-        self._size+=1
+        self._size += 1
 
     def _del_front(self):
         """Remove the element after the header node"""
@@ -87,7 +90,7 @@ class _SingleLinkedBase:
         self._header._next = del_node._next
         del_node._next = None
         del_node._element = None
-        self._size-=1
+        self._size -= 1
 
     def first(self):
         """Show the first element in the list"""
@@ -104,7 +107,9 @@ class _SingleLinkedBase:
             ptr=ptr._next
         return ptr._element
 
+#------------Stand alone function-----------------------------------------------------------------
 def second_to_last(slist):
+    """Find the second_to_last element in a single linked list"""
     if len(slist) < 2:
         raise Empty("doesn't have enough element")
     ptr=slist._header._next
@@ -116,9 +121,51 @@ def recursive_count(node):
     """Use recursive way to count the number of node in list"""
     if node._next != None:
         return recursive_count(node._next)+1
-    else :
+    else:
         return 1
 
+#------------Subclass------------------------------------------------------------------------------
+class LinkedStack(_SingleLinkedBase):
+    """LIFO Stack implementation based on a singly linked list."""
+
+    def push(self, e):
+        """Add element e to the top of the stack."""
+        self._add_front(e)
+
+    def top(self):
+        """Return (but do not remove) the element at the top of the stack.
+           Raise Empty exception if the stack is empty.
+        """
+        self.first()
+
+    def pop(self):
+        """Remove and return the element from the top of the stack (i.e., LIFO).
+           Raise Empty exception if the stack is empty.
+        """
+        self._del_front()
+
+    def showinfo(self):
+        print 'LinkedStack',
+        super(LinkedStack,self).showinfo()
+
+class LinkedQueue(_SingleLinkedBase):
+    """FIFO queue implementation based on a singly linked list."""
+
+    def dequeue(self):
+        """Remove and return the first element of the queue (i.e., FIFO).
+           Raise Empty exception if the queue is empty.
+        """
+        self._del_front()
+
+    def enqueue(self, e):
+        """Add an element to the back of queue."""
+        self._add_back(e)
+
+    def showinfo(self):
+        print 'LinkedQueue',
+        super(LinkedQueue,self).showinfo()
+
+#------------Test code-------------------------------------------------------------------------
 if __name__ == '__main__':
     a=_SingleLinkedBase()
     a._add_front(1)
@@ -126,21 +173,43 @@ if __name__ == '__main__':
     a._add_back(3)
     a._add_back(4)
     a.showinfo()
+
     b=_SingleLinkedBase()
     b._add_front(5)
     b._add_front(6)
     b._add_back(7)
     b._add_back(8)
     b.showinfo()
-#-----------R-7.1------------------------------
+
+    ls=LinkedStack()
+    ls.push(1)
+    ls.push(2)
+    ls.push('a')
+    ls.push(3)
+    ls.pop()
+    ls.showinfo()
+    print ls.first()
+
+    lq=LinkedQueue()
+    lq.enqueue(1)
+    lq.enqueue(2)
+    lq.dequeue()
+    lq.enqueue('a')
+    lq.showinfo()
+    print lq.first()
+
+    #-----------R-7.1------------------------------
     second_to_last(a)
     second_to_last(b)
-#-----------R-7.2------------------------------
+
+    #-----------R-7.2------------------------------
     a_add_b=a
     for i in b:
         a_add_b._add_back(i)
     a_add_b.showinfo()
-#-----------R-7.3------------------------------
+
+    #-----------R-7.3------------------------------
     count=recursive_count(a_add_b._header)
     count_of_header_trailer=2
     print "the count of node in list exclude header and trailer is",(count-count_of_header_trailer)
+
