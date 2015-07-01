@@ -112,6 +112,15 @@ class PositionalList(_DoublyLinkedBase):
         original._element = e # replace with new element
         return old_value # return the old element value
 
+    def max(self):
+        walk=self.first()
+        max=self.first()
+        while walk!=self.last():
+            walk=self.after(walk)
+            if walk.element() > max.element():
+                max=walk
+        print max.element()
+
 #------------Stand alone function----------------------------------------------------------------
 
 def insertion_sort(L):
@@ -165,3 +174,8 @@ if __name__ == '__main__':
 
     print 'the max element in list is',
     max(a)
+
+    #-----------R-7.12----------------------------------------------------------------
+    print "Test for R-7.12................................"
+    print "the max element in list(use class method)is:",
+    a.max()
