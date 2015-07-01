@@ -1,8 +1,13 @@
 #coding=utf-8
+"""This module contain an advance ADT implemented by _DoublyLinkedBase
+"""
+#------------Import packet-----------------------------------------------------------------------
 from DoublyLinkedList import _DoublyLinkedBase
 
+#------------Class PositionalList----------------------------------------------------------------
 class PositionalList(_DoublyLinkedBase):
     """A sequential container of elements allowing positional access."""
+
     #-------------------------- nested Position class --------------------------
     class Position:
         """An abstraction representing the location of a single element."""
@@ -23,6 +28,7 @@ class PositionalList(_DoublyLinkedBase):
         def __ne__ (self, other):
             """Return True if other does not represent the same location."""
             return not (self == other) # opposite of eq
+
     #------------------------------- utility method -------------------------------
     def _validate(self, p):
         """Return position's node, or raise appropriate error if invalid."""
@@ -33,13 +39,14 @@ class PositionalList(_DoublyLinkedBase):
         if p._node._next is None: # convention for deprecated nodes
             raise ValueError('p is no longer valid')
         return p._node
-    #------------------------------- utility method -------------------------------
+
     def _make_position(self, node):
         """Return Position instance for given node (or None if sentinel)."""
         if node is self._header or node is self._trailer:
             return None # boundary violation
         else:
             return self.Position(self, node) # legitimate position
+
     #------------------------------- accessors -------------------------------
     def first(self):
         """Return the first Position in the list (or None if list is empty)."""
@@ -65,6 +72,7 @@ class PositionalList(_DoublyLinkedBase):
         while cursor is not None:
             yield cursor.element()
             cursor = self.after(cursor)
+
     #------------------------------- mutators -------------------------------
     # override inherited version to return Position, rather than Node
     def _insert_between(self, e, predecessor, successor):
@@ -104,6 +112,8 @@ class PositionalList(_DoublyLinkedBase):
         original._element = e # replace with new element
         return old_value # return the old element value
 
+#------------Stand alone function----------------------------------------------------------------
+
 def insertion_sort(L):
     """Sort PositionalList of comparable elements into nondecreasing order."""
     if len(L) > 1: # otherwise, no need to sort it
@@ -120,16 +130,38 @@ def insertion_sort(L):
                 L.delete(pivot)
                 L.add_before(walk, value) # reinsert value before walk
 
+#------------Test code-------------------------------------------------------------------------
+
 if __name__ == '__main__':
+    #-------------------------- Test code for PositionalList --------------------------
+    print "Test for PositionalList.........................."
     a=PositionalList()
     a.add_last(1)
     a.add_first(100)
     a.add_last(24)
     a.add_first(96)
     a.add_last(8)
+    for i in a:
+        print i
 
-    for i in a:
+    #-------------------------- Test code for insertion_sort --------------------------
+    print "Test for PositionalList.........................."
+    import copy
+    m=copy.copy(a)
+    insertion_sort(m)
+    for i in m:
         print i
-    insertion_sort(a)
-    for i in a:
-        print i
+
+    #-----------R-7.11----------------------------------------------------------------
+    print "Test for R-7.11................................"
+    def max(tlist):
+        walk=tlist.first()
+        max=tlist.first()
+        while walk!=tlist.last():
+            walk=tlist.after(walk)
+            if walk.element() > max.element():
+                max=walk
+        print max.element()
+
+    print 'the max element in list is',
+    max(a)

@@ -3,20 +3,20 @@
    is improved by using Header-Trailer model instead of Head-Tail model.
 
    ### Head-Tail model have a lot of disadvantage,for example you have to do more job
-   when you insert a new element into a singlelinkedlist base on head-tail model.
+       when you insert a new element into a singlelinkedlist base on head-tail model.
 
    ### But in Header-Trailer model,the header node and trailer node is always exist no matter
-   the list is empty or not.So it is much more easy for user to write code and make
-   less mistake.
+       the list is empty or not.So it is much more easy for user to write code and make
+       less mistake.
 
    ### It is recommended to use Header-Trailer model all the times.Both in single list and
-   double list.
+       double list.
 
    ### With _SingleLinkedBase,ctxrr re-implement 2 different ADT:
-    1.LinkedStack
-    2.LinkedQueue
-    But there is some problem in the implementation of CircularQueue ADT,so you have to use the
-    traditional head-tail model to implement it!
+       1.LinkedStack
+       2.LinkedQueue
+       But there is some problem in the implementation of CircularQueue ADT,so you have to use the
+       traditional head-tail model to implement it!
 """
 #------------Class Empty--------------------------------------------------------------------------
 class Empty(Exception):
@@ -88,9 +88,11 @@ class _SingleLinkedBase(object):
             raise Empty('List is empty')
         del_node = self._header._next
         self._header._next = del_node._next
+        element = del_node._element
         del_node._next = None
         del_node._element = None
         self._size -= 1
+        return element #record the element
 
     def first(self):
         """Show the first element in the list"""
@@ -167,20 +169,23 @@ class LinkedQueue(_SingleLinkedBase):
 
 #------------Test code-------------------------------------------------------------------------
 if __name__ == '__main__':
+
     a=_SingleLinkedBase()
     a._add_front(1)
     a._add_front(2)
     a._add_back(3)
     a._add_back(4)
-    a.showinfo()
+    #a.showinfo()
 
     b=_SingleLinkedBase()
     b._add_front(5)
     b._add_front(6)
     b._add_back(7)
     b._add_back(8)
-    b.showinfo()
+    #b.showinfo()
 
+    #-------------------------- Test code for LinkedStack --------------------------
+    print "Test for LinkedStack.........................."
     ls=LinkedStack()
     ls.push(1)
     ls.push(2)
@@ -190,6 +195,8 @@ if __name__ == '__main__':
     ls.showinfo()
     print ls.first()
 
+    #-------------------------- Test code for LinkedQueue --------------------------
+    print "Test for LinkedQueue.........................."
     lq=LinkedQueue()
     lq.enqueue(1)
     lq.enqueue(2)
@@ -198,17 +205,20 @@ if __name__ == '__main__':
     lq.showinfo()
     print lq.first()
 
-    #-----------R-7.1------------------------------
+    #-----------R-7.1----------------------------------------------------------------
+    print "Test for R-7.1................................"
     second_to_last(a)
     second_to_last(b)
 
-    #-----------R-7.2------------------------------
+    #-----------R-7.2----------------------------------------------------------------
+    print "Test for R-7.2................................"
     a_add_b=a
     for i in b:
         a_add_b._add_back(i)
     a_add_b.showinfo()
 
-    #-----------R-7.3------------------------------
+    #-----------R-7.3----------------------------------------------------------------
+    print "Test for R-7.3................................"
     count=recursive_count(a_add_b._header)
     count_of_header_trailer=2
     print "the count of node in list exclude header and trailer is",(count-count_of_header_trailer)
