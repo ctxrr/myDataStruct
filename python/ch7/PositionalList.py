@@ -73,6 +73,13 @@ class PositionalList(_DoublyLinkedBase):
             yield cursor.element()
             cursor = self.after(cursor)
 
+    def __reversed__(self):
+        """Generate a backward iteration of the elements of the list."""
+        cursor = self.last()
+        while cursor is not None:
+            yield cursor.element()
+            cursor = self.before(cursor)
+
     #------------------------------- mutators -------------------------------
     # override inherited version to return Position, rather than Node
     def _insert_between(self, e, predecessor, successor):
@@ -112,7 +119,13 @@ class PositionalList(_DoublyLinkedBase):
         original._element = e # replace with new element
         return old_value # return the old element value
 
+    def move_to_front(self,p):
+        """Move the node to the front of the list"""
+        old_element=self.delete(p)
+        self.add_first(old_element)
+
     def max(self):
+        """find the max element in list"""
         walk=self.first()
         max=self.first()
         while walk!=self.last():
@@ -121,6 +134,16 @@ class PositionalList(_DoublyLinkedBase):
                 max=walk
         print max.element()
 
+    def find(self,e):
+        """find if e exist in list"""
+        walk=self.first()
+        while walk!=self.last():
+            if walk.element()==e:
+                print 'find succeed'
+                return walk
+            else : walk=self.after(walk)
+        print 'find nothing'
+        return None
 #------------Stand alone function----------------------------------------------------------------
 
 def insertion_sort(L):
@@ -139,6 +162,34 @@ def insertion_sort(L):
                 L.delete(pivot)
                 L.add_before(walk, value) # reinsert value before walk
 
+def max(tlist):
+    """Find the max element in the given list"""
+    walk=tlist.first()
+    max=tlist.first()
+    while walk!=tlist.last():
+        walk=tlist.after(walk)
+        if walk.element() > max.element():
+            max=walk
+    print max.element()
+
+def max_re(start_position,n,slist):
+    """find the max one among the n element start from start_element
+       using recursion
+    """
+    if n==2:
+        if start_position.element() > slist.after(start_position).element():
+            return start_position.element()
+        else:
+            return slist.after(start_position).element()
+    elif n < 2:
+        print 'wrong input'
+        return None
+    else:
+        n-=1
+        if start_position.element() > max_re(slist.after(start_position),n,slist):
+            return start_position.element()
+        else:
+            return max_re(slist.after(start_position),n,slist)
 #------------Test code-------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -146,36 +197,72 @@ if __name__ == '__main__':
     print "Test for PositionalList.........................."
     a=PositionalList()
     a.add_last(1)
-    a.add_first(100)
+    a.add_first(8)
     a.add_last(24)
     a.add_first(96)
-    a.add_last(8)
+    a.add_last(100)
     for i in a:
-        print i
+        print i,
+    print ''
 
     #-------------------------- Test code for insertion_sort --------------------------
     print "Test for PositionalList.........................."
     import copy
-    m=copy.copy(a)
+    m=copy.deepcopy(a)
     insertion_sort(m)
     for i in m:
-        print i
+        print i,
+    print ''
 
     #-----------R-7.11----------------------------------------------------------------
     print "Test for R-7.11................................"
-    def max(tlist):
-        walk=tlist.first()
-        max=tlist.first()
-        while walk!=tlist.last():
-            walk=tlist.after(walk)
-            if walk.element() > max.element():
-                max=walk
-        print max.element()
-
-    print 'the max element in list is',
+    print 'find max element (use function)is:',
     max(a)
 
     #-----------R-7.12----------------------------------------------------------------
     print "Test for R-7.12................................"
-    print "the max element in list(use class method)is:",
+    print "find max element (use class method)is:",
     a.max()
+
+    #-----------R-7.13----------------------------------------------------------------
+    print "Test for R-7.13................................"
+    print "test result of method find:"
+    a.find(96)
+    a.find(98)
+
+    #-----------R-7.14----------------------------------------------------------------
+    print "Test for R-7.14................................"
+    x=a.first()
+    y=a.after(x)
+    z=a.after(y)
+    j=a.after(z)
+    k=a.last()
+    ret=max_re(j,2,a)
+    print ret
+    for i in a:
+        print i,
+    print ''
+    #-----------R-7.15----------------------------------------------------------------
+    print "Test for R-7.15................................"
+    print "forward iter:",
+    for i in a:
+        print i,
+    print ''
+    print "backward iter:",
+    for i in reversed(a):
+        print i,
+    print ''
+    #-----------R-7.17----------------------------------------------------------------
+    print "Test for R-7.17................................"
+    n=copy.deepcopy(a)
+    print 'old list:',
+    for i in n:
+        print i,
+    print ''
+    n.move_to_front(n.last())
+    print 'move the last element to front...'
+    print 'new list:',
+    for i in n:
+        print i,
+    print ''
+

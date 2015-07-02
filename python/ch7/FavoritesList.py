@@ -1,10 +1,15 @@
 #coding=utf-8
 """
-    This module implements a favorites list ADT supported by Sorted list which
-    implemented by PositionalList ADT.
+    ### This module implements a favorites list ADT FavoritesList supported by Sorted list which
+        implemented by PositionalList ADT.
+    ### It also re-implemented a new class FavoritesListMTF in a different way based on
+        move-to-front heuristic
 """
+
+#------------Import packet-----------------------------------------------------------------------
 from PositionalList import PositionalList
 
+#------------Class Favoriteslist-----------------------------------------------------------------
 class FavoritesList:
     """List of elements ordered from most frequently accessed to least."""
 
@@ -38,6 +43,16 @@ class FavoritesList:
         """Create an empty list of favorites."""
         self._data = PositionalList() # will be list of Item instances
 
+    def __iter__(self):
+        """Generate a forward iteration of the elements of the list."""
+        for i in self._data:
+            yield i._value
+
+    def __reversed__(self):
+        """Generate a backward iteration of the elements of the list."""
+        for i in reversed(self._data):
+            yield i._value
+
     def __len__(self):
         """Return number of entries on favorites list."""
         return len(self._data)
@@ -70,6 +85,10 @@ class FavoritesList:
             yield item._value # report user’s element
             walk = self._data.after(walk)
 
+    def clear(self):
+        self._data = PositionalList() # will be list of Item instances
+
+#------------Class FavoriteslistMTF-----------------------------------------------------------
 class FavoritesListMTF(FavoritesList):
     """List of elements ordered with move-to-front heuristic."""
 
@@ -103,8 +122,11 @@ class FavoritesListMTF(FavoritesList):
             yield highPos.element()._value # report element to user
             temp.delete(highPos) # remove from temp list
 
+#------------Test code-------------------------------------------------------------------------
 if __name__ == '__main__':
-    """test for FavoritesList""" 
+
+    #-------------------------- Test code for Favoriteslist ----------------------
+    print "test for FavoritesList........................"
     a=FavoritesList()
     a.access('a')
     a.access('a')
@@ -113,9 +135,11 @@ if __name__ == '__main__':
     a.access('a')
     a.access('c')
     for i in a.top(3):
-        print i
+        print i,
+    print ''
 
-    """test for FavoritesListMTF"""
+    #-------------------------- Test code for FavoriteslistMTF --------------------
+    print "test for FavoritesListMTF......................"
     b=FavoritesListMTF()
     b.access('a')
     b.access('a')
@@ -124,4 +148,66 @@ if __name__ == '__main__':
     b.access('a')
     b.access('c')
     for i in b.top(3):
-        print i
+        print i,
+    print ''
+
+    #-----------R-7.20-----------------------------------------------------------------
+    print "Test for R-7.20..............................."
+    c=FavoritesListMTF()
+    c.access(1)
+    c.access(2)
+    c.access(3)
+    c.access(4)
+    c.access(5)
+    c.access(6)
+    import copy
+    m=copy.deepcopy(c)
+    templist=list()
+    print 'old list:',
+    for i in m:
+        print i,
+    print ''
+
+    for i in m:
+        templist.append(i)
+
+    for i in templist:
+        m.access(i) # i is at the top of the list,so access it will spend O(1) time
+
+    print 'new list:',
+    for i in m:
+        print i,
+    print ''
+
+    #-----------R-7.21-----------------------------------------------------------------
+    print "Test for R-7.21..............................."
+    n=copy.deepcopy(c)
+    templist1=list()
+    print 'old list:',
+    for i in n:
+        print i,
+    print ''
+
+    for i in reversed(n):#reversed() will not change the sequence of list
+        templist1.append(i)
+
+    for i in templist1:
+        n.access(i) # i is at the end of the list,so access it will spend O(n) time
+
+    print 'new list:',
+    for i in n:
+        print i,
+    print ''
+
+    #-----------R-7.22-----------------------------------------------------------------
+    print "Test for R-7.22.............................."
+    p=copy.deepcopy(c)
+    print 'old list:',
+    for i in p:
+        print i,
+    print ''
+    p.clear()
+    print 'new list:',
+    for i in p:
+        print i,
+    print ''
