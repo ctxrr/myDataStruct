@@ -61,11 +61,9 @@ class _SingleLinkedBase(object):
 
     def showinfo(self):
         """Show the infomation of current object"""
-        start=self._header._next
         print "List:[",
-        for i in range(self._size):
-            print start._element,
-            start=start._next
+        for i in self:
+            print i,
         print "]"
 
     def _add_front(self,e):
@@ -108,6 +106,11 @@ class _SingleLinkedBase(object):
         while ptr._next!=self._trailer:
             ptr=ptr._next
         return ptr._element
+
+    def clear(self):
+        """Clean the list into empty"""
+        while self._size:
+            self._del_front()
 
 #------------Stand alone function-----------------------------------------------------------------
 def second_to_last(slist):
@@ -175,7 +178,13 @@ if __name__ == '__main__':
     a._add_front(2)
     a._add_back(3)
     a._add_back(4)
-    #a.showinfo()
+    # a.showinfo()
+    import copy
+    c=copy.deepcopy(a)
+    print '1'
+    c.showinfo()
+    c.clear()
+    c.showinfo()
 
     b=_SingleLinkedBase()
     b._add_front(5)

@@ -46,12 +46,12 @@ class FavoritesList:
     def __iter__(self):
         """Generate a forward iteration of the elements of the list."""
         for i in self._data:
-            yield i._value
+            yield i
 
     def __reversed__(self):
         """Generate a backward iteration of the elements of the list."""
         for i in reversed(self._data):
-            yield i._value
+            yield i
 
     def __len__(self):
         """Return number of entries on favorites list."""
@@ -86,8 +86,26 @@ class FavoritesList:
             walk = self._data.after(walk)
 
     def clear(self):
+        """Clean the list into empty"""
         self._data = PositionalList() # will be list of Item instances
 
+    def reset_count(self):
+        """Reset the count of element in list leaving the order unchanged"""
+        for i in self:
+            i._value = 0
+    def showinfo(self):
+        """Show the infomation of the current list"""
+        print 'Favoriteslist info:[',
+        for i in self:
+            print '(',i._value,',',i._count,')',
+        print ']'
+
+    def showelement(self):
+        """Show the element of the current list"""
+        print 'Favoriteslist elements:[',
+        for i in self:
+            print i._value,
+        print ']'
 #------------Class FavoriteslistMTF-----------------------------------------------------------
 class FavoritesListMTF(FavoritesList):
     """List of elements ordered with move-to-front heuristic."""
@@ -164,50 +182,49 @@ if __name__ == '__main__':
     m=copy.deepcopy(c)
     templist=list()
     print 'old list:',
-    for i in m:
-        print i,
-    print ''
+    m.showelement()
 
     for i in m:
-        templist.append(i)
+        templist.append(i._value)
 
     for i in templist:
         m.access(i) # i is at the top of the list,so access it will spend O(1) time
 
     print 'new list:',
-    for i in m:
-        print i,
-    print ''
+    m.showelement()
 
     #-----------R-7.21-----------------------------------------------------------------
     print "Test for R-7.21..............................."
     n=copy.deepcopy(c)
     templist1=list()
     print 'old list:',
-    for i in n:
-        print i,
-    print ''
+    n.showelement()
 
     for i in reversed(n):#reversed() will not change the sequence of list
-        templist1.append(i)
+        templist1.append(i._value)
 
     for i in templist1:
         n.access(i) # i is at the end of the list,so access it will spend O(n) time
 
     print 'new list:',
-    for i in n:
-        print i,
-    print ''
+    n.showelement()
 
     #-----------R-7.22-----------------------------------------------------------------
     print "Test for R-7.22.............................."
     p=copy.deepcopy(c)
     print 'old list:',
-    for i in p:
-        print i,
-    print ''
+    p.showelement()
+
     p.clear()
     print 'new list:',
-    for i in p:
-        print i,
-    print ''
+    p.showelement()
+
+    #-----------R-7.23-----------------------------------------------------------------
+    print "Test for R-7.23.............................."
+    q=copy.deepcopy(c)
+    print 'old list:',
+    q.showinfo()
+
+    q.reset_count()
+    print 'new list:',
+    q.showinfo()

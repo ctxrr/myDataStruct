@@ -80,6 +80,13 @@ class PositionalList(_DoublyLinkedBase):
             yield cursor.element()
             cursor = self.before(cursor)
 
+    def showinfo(self):
+        """Show the infomation of the current list"""
+        print 'PositionalList info:[',
+        for i in self:
+            print i,
+        print ']'
+
     #------------------------------- mutators -------------------------------
     # override inherited version to return Position, rather than Node
     def _insert_between(self, e, predecessor, successor):
@@ -190,6 +197,7 @@ def max_re(start_position,n,slist):
             return start_position.element()
         else:
             return max_re(slist.after(start_position),n,slist)
+
 #------------Test code-------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -201,18 +209,14 @@ if __name__ == '__main__':
     a.add_last(24)
     a.add_first(96)
     a.add_last(100)
-    for i in a:
-        print i,
-    print ''
+    a.showinfo()
 
     #-------------------------- Test code for insertion_sort --------------------------
     print "Test for PositionalList.........................."
     import copy
     m=copy.deepcopy(a)
     insertion_sort(m)
-    for i in m:
-        print i,
-    print ''
+    m.showinfo()
 
     #-----------R-7.11----------------------------------------------------------------
     print "Test for R-7.11................................"
@@ -239,9 +243,7 @@ if __name__ == '__main__':
     k=a.last()
     ret=max_re(j,2,a)
     print ret
-    for i in a:
-        print i,
-    print ''
+    a.showinfo()
     #-----------R-7.15----------------------------------------------------------------
     print "Test for R-7.15................................"
     print "forward iter:",
@@ -256,13 +258,8 @@ if __name__ == '__main__':
     print "Test for R-7.17................................"
     n=copy.deepcopy(a)
     print 'old list:',
-    for i in n:
-        print i,
-    print ''
+    n.showinfo()
     n.move_to_front(n.last())
     print 'move the last element to front...'
     print 'new list:',
-    for i in n:
-        print i,
-    print ''
-
+    n.showinfo()

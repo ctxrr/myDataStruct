@@ -38,6 +38,20 @@ class _DoublyLinkedBase(object):
         """Return the number of elements in the list."""
         return self._size
 
+    def __iter__(self):
+        """Generate a forward iteration of the elements of the list."""
+        walk = self._header._next
+        while walk._element != None:
+            yield walk._element
+            walk = walk._next
+
+    def __reversed__(self):
+        """Generate a backward iteration of the elements of the list."""
+        walk = self._trailer._prev
+        while walk._element !=None:
+            yield walk._element
+            walk = walk._prev
+
     def is_empty(self):
         """Return True if list is empty."""
         return self._size == 0
@@ -75,11 +89,9 @@ class _DoublyLinkedBase(object):
 
     def showinfo(self):
         """Show the infomation of the current list"""
-        current = self._header._next
         print 'List:[',
-        for i in range(self._size):
-            print current._element,
-            current=current._next
+        for i in self:
+            print i,
         print ']'
 
 #------------Subclass------------------------------------------------------------------------------
