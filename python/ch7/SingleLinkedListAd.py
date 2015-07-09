@@ -51,6 +51,7 @@ class _SingleLinkedBase(object):
     def __iter__(self):
         """Generate a forward iteration of the elements of the list."""
         ptr = self._header._next
+        # while ptr._next != None:
         while ptr != self._trailer:
             yield ptr._element
             ptr = ptr._next
@@ -129,6 +130,26 @@ def recursive_count(node):
     else:
         return 1
 
+def reverse_iter(slist):
+    """Reverse a single list iteratively
+       p and q are used for reverse;
+       r is used for record the rest of the list
+    """
+    p=slist._header._next
+    q=p._next
+    p._next=slist._trailer
+    while q != slist._trailer:
+        r=q._next
+        q._next=p #reverse the _next pointer
+        p=q
+        q=r
+    slist._header._next=p
+
+def reverse_recur(slist):
+    """Reverse a single list recursively
+    """
+    pass
+
 #------------Subclass------------------------------------------------------------------------------
 class LinkedStack(_SingleLinkedBase):
     """LIFO Stack implementation based on a singly linked list."""
@@ -172,26 +193,26 @@ class LinkedQueue(_SingleLinkedBase):
 
 #------------Test code-------------------------------------------------------------------------
 if __name__ == '__main__':
-
+    #-------------------------- Prepare some list to use-----------------------
+    print "Prepare list a................................"
     a=_SingleLinkedBase()
-    a._add_front(1)
-    a._add_front(2)
+    a._add_back(1)
+    a._add_back(2)
     a._add_back(3)
     a._add_back(4)
-    # a.showinfo()
-    import copy
-    c=copy.deepcopy(a)
-    print '1'
-    c.showinfo()
-    c.clear()
-    c.showinfo()
+    a._add_back(5)
+    a.showinfo()
+    print ''
 
+    print "Prepare list b................................"
     b=_SingleLinkedBase()
-    b._add_front(5)
     b._add_front(6)
     b._add_back(7)
     b._add_back(8)
-    #b.showinfo()
+    b._add_back(9)
+    b._add_back(10)
+    b.showinfo()
+    print ''
 
     #-------------------------- Test code for LinkedStack --------------------------
     print "Test for LinkedStack.........................."
@@ -202,7 +223,8 @@ if __name__ == '__main__':
     ls.push(3)
     ls.pop()
     ls.showinfo()
-    print ls.first()
+    print 'first element is',ls.first()
+    print ''
 
     #-------------------------- Test code for LinkedQueue --------------------------
     print "Test for LinkedQueue.........................."
@@ -212,23 +234,35 @@ if __name__ == '__main__':
     lq.dequeue()
     lq.enqueue('a')
     lq.showinfo()
-    print lq.first()
+    print 'first element is',lq.first()
+    print ''
 
     #-----------R-7.1----------------------------------------------------------------
     print "Test for R-7.1................................"
     second_to_last(a)
     second_to_last(b)
+    print ''
 
     #-----------R-7.2----------------------------------------------------------------
     print "Test for R-7.2................................"
-    a_add_b=a
+    import copy
+    a_add_b=copy.deepcopy(a)
     for i in b:
         a_add_b._add_back(i)
     a_add_b.showinfo()
+    print ''
 
     #-----------R-7.3----------------------------------------------------------------
     print "Test for R-7.3................................"
     count=recursive_count(a_add_b._header)
     count_of_header_trailer=2
-    print "the count of node in list exclude header and trailer is",(count-count_of_header_trailer)
+    print "the count is",(count-count_of_header_trailer)
+    print ''
 
+    #-----------C-7.28----------------------------------------------------------------
+    print "Test for C-7.28................................"
+    print 'going to reverse iteratively......'
+    c=copy.deepcopy(a)
+    c.showinfo()
+    reverse_iter(c)
+    c.showinfo()
