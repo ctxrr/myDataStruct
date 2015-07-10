@@ -50,6 +50,22 @@ class _SingleLinkedList(object):
             print start._element,
             start=start._next
         print "]"
+#------------Stand alone function-----------------------------------------------------------------
+def reverse_iter(slist):
+    """Reverse a single list iteratively
+       p and q are used for reverse;
+       r is used for record the rest of the list
+    """
+    slist._tail=slist._head
+    p=slist._head
+    q=p._next
+    p._next=None
+    while q != None:
+        r=q._next
+        q._next=p #reverse the _next pointer
+        p=q
+        q=r
+    slist._head=p
 
 #------------Subclass------------------------------------------------------------------------------
 class LinkedStack(_SingleLinkedList):
@@ -269,3 +285,15 @@ if __name__ == '__main__':
     print if_node_in_queue(temlist[1],temlist[6])
     print if_node_in_queue(temlist[9],temlist[6])
 
+    #-----------C-7.28----------------------------------------------------------------
+    print "Test for C-7.28................................"
+    print 'going to reverse iteratively......'
+    m=LinkedStack()
+    m.push(1)
+    m.push(2)
+    m.push(3)
+    m.push(4)
+    m.push(5)
+    m.showinfo()
+    reverse_iter(m)
+    m.showinfo()

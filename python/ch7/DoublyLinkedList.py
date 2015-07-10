@@ -94,6 +94,22 @@ class _DoublyLinkedBase(object):
             print i,
         print ']'
 
+    def reverse(self):
+        # p = self._header._next
+        # q = self._header._next._next
+        # last = self._trailer
+        # p._next = self._trailer
+        # self._trailer._prev = p
+        # while q._next != last:
+        #     r = q._next
+        #     q._next = p
+        #     p._prev = q
+        #     p = q
+        #     q = r
+        # q._prev = self._header
+        # self._header._next = q
+        pass
+
 #------------Subclass------------------------------------------------------------------------------
 class DoublyLinkedDeque(_DoublyLinkedBase): # note the use of inheritance
     """Double-ended queue implementation based on a doubly linked list."""
@@ -192,7 +208,9 @@ if __name__ == '__main__':
     dd.add_first(8)
     dd.showinfo()
     print ' '
-
+    dd.reverse()
+    dd.showinfo()
+    print ''
     #-----------R-7.8-----------------------------------------------------------------
     print "Test for R-7.8..............................."
     """do has odd number of nodes while de has even"""

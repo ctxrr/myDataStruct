@@ -93,6 +93,18 @@ class _SingleLinkedBase(object):
         self._size -= 1
         return element #record the element
 
+    def _del_back(self):
+        """Remove the element before the trailer node"""
+        if self.is_empty():
+            raise Empty('List is empty')
+        ptr=self._header
+        while ptr._next._next!=self._trailer:
+            ptr=ptr._next
+        old = ptr._next
+        ptr._next = self._trailer
+        old._element = old._next = None
+        self._size -=1
+
     def first(self):
         """Show the first element in the list"""
         if self.is_empty():
@@ -145,10 +157,15 @@ def reverse_iter(slist):
         q=r
     slist._header._next=p
 
-def reverse_recur(slist):
+def reverse_recur(walk,slist):
     """Reverse a single list recursively
     """
-    pass
+    if walk._next == slist._trailer:
+        slist._header._next=walk
+        return
+    reverse_recur(walk._next,slist)
+    walk._next._next=walk
+    walk._next=slist._trailer
 
 #------------Subclass------------------------------------------------------------------------------
 class LinkedStack(_SingleLinkedBase):
@@ -168,7 +185,7 @@ class LinkedStack(_SingleLinkedBase):
         """Remove and return the element from the top of the stack (i.e., LIFO).
            Raise Empty exception if the stack is empty.
         """
-        self._del_front()
+        return self._del_front()
 
     def showinfo(self):
         print 'LinkedStack',
@@ -190,6 +207,26 @@ class LinkedQueue(_SingleLinkedBase):
     def showinfo(self):
         print 'LinkedQueue',
         super(LinkedQueue,self).showinfo()
+
+class LeakyStack(LinkedStack):
+    """LeakyStack works almost the same as LinkedStack.
+       But the difference between them is:LeakyStack has a additional member:_capacity.
+       This means when an LeakyStack instance is created,it has a max capacity,when trying
+       to do push operation in an full LeakyStack list,the last one will be removed
+    """
+    def __init__ (self,capacity):
+        """Create an SingleLinkedList."""
+        self._header  = self._Node(None,None)
+        self._trailer = self._Node(None,None)
+        self._header._next = self._trailer
+        self._size = 0
+        self._capacity = capacity
+
+    def push(self, e):
+        """Add element e to the top of the stack."""
+        if self._size ==self._capacity:
+            self._del_back()
+        self._add_front(e)
 
 #------------Test code-------------------------------------------------------------------------
 if __name__ == '__main__':
@@ -259,10 +296,30 @@ if __name__ == '__main__':
     print "the count is",(count-count_of_header_trailer)
     print ''
 
-    #-----------C-7.28----------------------------------------------------------------
-    print "Test for C-7.28................................"
+    #-----------C-7.28 and C-7.29----------------------------------------------------
+    print "Test for C-7.28 and C-2.29...................."
     print 'going to reverse iteratively......'
     c=copy.deepcopy(a)
     c.showinfo()
     reverse_iter(c)
     c.showinfo()
+    print 'going to reverse recursively......'
+    d=copy.deepcopy(a)
+    d.showinfo()
+    reverse_recur(d._header._next,d)
+    d.showinfo()
+
+   #-----------C-7.30----------------------------------------------------------------
+    print "Test for C-7.30................................"
+    z=LeakyStack(5)
+    z.push(1)
+    z.push(2)
+    z.push(3)
+    z.push(4)
+    z.push(5)
+    z.showinfo()
+    z.push(6)
+    z.showinfo()
+    print ''
+
+
