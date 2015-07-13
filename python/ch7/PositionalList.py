@@ -126,6 +126,13 @@ class PositionalList(_DoublyLinkedBase):
         original._element = e # replace with new element
         return old_value # return the old element value
 
+    def swap(self,p,q):
+        """Swap the node referenced by positions p and q
+        """
+        node_p = self._validate(p)
+        node_q = self._validate(q)
+        super(PositionalList,self).swap(node_p,node_q)
+
     def move_to_front(self,p):
         """Move the node to the front of the list"""
         old_element=self.delete(p)
@@ -263,3 +270,17 @@ if __name__ == '__main__':
     print 'move the last element to front...'
     print 'new list:',
     n.showinfo()
+
+    #-----------C-7.34----------------------------------------------------------------
+    print "Test for C-7.34................................"
+    sw = PositionalList()
+    sw1 = sw.add_first(1)
+    sw2 = sw.add_first(2)
+    sw3 = sw.add_first(3)
+    sw4 = sw.add_first(4)
+    sw5 = sw.add_first(5)
+    sw.showinfo()
+    sw.swap(sw5,sw1)
+    sw.showinfo()
+    for i in reversed(sw):
+        print i,

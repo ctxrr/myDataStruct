@@ -94,6 +94,49 @@ class _DoublyLinkedBase(object):
             print i,
         print ']'
 
+    def _swap(self,p,q):
+        """Swap the node referenced by p and q
+           p is in front of q
+        """
+        if p._next ==q:
+            r = q._next
+            m = p._prev
+            m._next = q
+            q._prev = m
+            p._prev._next = q
+            q._prev = p._prev
+            q._next = p
+            p._prev = q
+            p._next = r
+            r._prev = p
+        else:
+            pp = p._prev
+            pn = p._next
+            qp = q._prev
+            qn = q._next
+            pp._next = q
+            q._prev = pp
+            q._next = pn
+            pn._prev = q
+            qp._next = p
+            p._prev = qp
+            p._next = qn
+            qn._prev = p
+
+    def swap(self,p,q):
+        """Swap the node referenced by p and q
+           But we don't know the order of p and q
+        """
+        walk = p
+        while walk._next != self._trailer:
+            if walk._next == q:
+                self._swap(p,q)
+                return
+            else:
+                walk = walk._next
+        self._swap(q,p)
+        return
+
     def reverse(self):
         # p = self._header._next
         # q = self._header._next._next
@@ -115,11 +158,11 @@ class DoublyLinkedDeque(_DoublyLinkedBase): # note the use of inheritance
     """Double-ended queue implementation based on a doubly linked list."""
     def add_first(self, e):
         """Add an element to the front of the deque."""
-        self._insert_between(e, self._header, self._header._next) # after header
+        return self._insert_between(e, self._header, self._header._next) # after header
 
     def add_last(self, e):
         """Add an element to the back of the deque."""
-        self._insert_between(e, self._trailer._prev, self._trailer) # before trailer
+        return self._insert_between(e, self._trailer._prev, self._trailer) # before trailer
 
     def delete_first(self):
         """Remove and return the element from the front of the deque.
@@ -145,7 +188,7 @@ class DoublyLinkedQueue(_DoublyLinkedBase): # note the use of inheritance
     """Single-ended queue implementation based on a doubly linked list."""
     def enqueue(self, e):
         """Add an element to the back of the queue."""
-        self._insert_between(e, self._trailer._prev, self._trailer) # before trailer
+        return self._insert_between(e, self._trailer._prev, self._trailer) # before trailer
 
     def dequeue(self):
         """Remove and return the element from the front of the queue.
@@ -163,7 +206,7 @@ class DoublyLinkedStack(_DoublyLinkedBase): # note the use of inheritance
     """Stack implementation based on a doubly linked list."""
     def pop(self, e):
         """Add an element to the front of the stack."""
-        self._insert_between(e, self._header, self._header._next) # after header
+        return self._insert_between(e, self._header, self._header._next) # after header
 
     def push(self):
         """Remove and return the element from the stack.
@@ -272,3 +315,14 @@ if __name__ == '__main__':
     print 'new list:',
     new_list.showinfo()
 
+    #-----------C-7.34----------------------------------------------------------------
+    print "Test for C-7.34................................"
+    mmm=DoublyLinkedDeque()
+    m1=mmm.add_first(1)
+    m2=mmm.add_first(2)
+    m3=mmm.add_first(3)
+    m4=mmm.add_first(4)
+    m5=mmm.add_first(5)
+    mmm.showinfo()
+    mmm.swap(m3,m2)
+    mmm.showinfo()
