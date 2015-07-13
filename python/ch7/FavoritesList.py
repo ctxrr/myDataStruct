@@ -92,7 +92,8 @@ class FavoritesList:
     def reset_count(self):
         """Reset the count of element in list leaving the order unchanged"""
         for i in self:
-            i._value = 0
+            i._count = 0
+
     def showinfo(self):
         """Show the infomation of the current list"""
         print 'Favoriteslist info:[',
@@ -139,6 +140,46 @@ class FavoritesListMTF(FavoritesList):
             # we have found the element with highest count
             yield highPos.element()._value # report element to user
             temp.delete(highPos) # remove from temp list
+
+#------------Class FavoriteslistMTFAd-----------------------------------------------------------
+class FavorateListMTFAd(FavoritesListMTF):
+    """Subclass of FavoritesListMTF,but the elements that have not been
+       accessed in the most resent n accesses are automatically purged
+       from the list.
+    """
+
+    #------------------------------ nested Item class ------------------------------
+    class _Item:
+        __slots__ ='_value','_count'# streamline memory usage
+        def __init__ (self, e):
+            self._value = e # the user s element
+            self._count = 0 # access count initially zero
+            self._accessnum = 0
+
+    def __init__ (self,maxnum):
+        """Create an empty list of favorites."""
+        self._data = PositionalList() # will be list of Item instances
+        self._accessnum = 0
+        self._max = maxnum
+
+    def access(self, e):
+        """Access element e, thereby increasing its access count."""
+        self._accessnum += 1
+        p = self._find_position(e) # try to locate existing element
+        if p is None:
+            p = self._data.add_last(self._Item(e)) # if new, place at end
+        p.element()._count += 1 # always increment count
+        p.element()._accessnum = self._accessnum
+        self._move_up(p) # consider moving forward
+        if self._data.last().element()._accessnum == (self._accessnum - self._max) :
+            self._data.delete(self._data.last())
+
+    def showinfo(self):
+        """Show the infomation of the current list"""
+        print 'Favoriteslist info:[',
+        for i in self:
+            print '(',i._value,',',i._count,',',i._accessnum,')',
+        print ']'
 
 #------------Test code-------------------------------------------------------------------------
 if __name__ == '__main__':
@@ -228,3 +269,16 @@ if __name__ == '__main__':
     q.reset_count()
     print 'new list:',
     q.showinfo()
+
+    #-----------C-7.40-----------------------------------------------------------------
+    print "Test for C-7.40.............................."
+    mmm = FavorateListMTFAd(8)
+    for i in range(10):
+        mmm.access(i)
+    mmm.showinfo()
+    mmm.access(9)
+    mmm.showinfo()
+    mmm.access(9)
+    mmm.showinfo()
+    mmm.access(9)
+    mmm.showinfo()
