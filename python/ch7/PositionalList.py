@@ -284,3 +284,68 @@ if __name__ == '__main__':
     sw.showinfo()
     for i in reversed(sw):
         print i,
+    print ''
+    #-----------C-7.35----------------------------------------------------------------
+    print "Test for C-7.35................................"
+    class PositionalListA(PositionalList):
+        """PositionalListA don't use generator to interate but use python iterate protocol"""
+
+        def __iter__ (self):
+            """override the old __iter__ function"""
+            self.count = 0
+            self.cursor = self.first()
+            return self
+
+        def next(self):
+            """do not use the keyword yield!"""
+            if self.count != len(self):
+                ret = self.cursor.element()
+                self.cursor = self.after(self.cursor)
+                self.count += 1
+                return ret
+            else:
+                raise StopIteration
+
+    pla = PositionalListA()
+    pla.add_first(1)
+    pla.add_first(2)
+    pla.add_first(3)
+    pla.add_first(4)
+    for i in pla:
+        print i,
+    print ''
+    pla.showinfo()
+
+    #-----------C-7.36----------------------------------------------------------------
+    print "Test for C-7.36................................"
+    si = PositionalList()
+    si.add_first(1)
+    si.add_first(2)
+    si.add_first(7)
+    si.add_first(8)
+    si.add_first(4)
+    si.add_first(11)
+    si.add_first(15)
+    insertion_sort(si)
+    # init an nondecreasing Positional List
+    si.showinfo()
+
+    # define the findSum function it is a common useage.
+    def findSum(L,V):
+        m = L.first()
+        n = L.last()
+        ret = list()
+        while m.element() < n.element():
+            if (m.element() + n.element()) > V:
+                n = L.before(n)
+            elif (m.element() + n.element()) < V :
+                m = L.after(m)
+            else:
+                ret.append((m.element(),n.element()))
+                m = L.after(m)
+        if len(ret) != 0:
+            return ret
+        else:
+            return None
+    # test code
+    print findSum(si,15)
