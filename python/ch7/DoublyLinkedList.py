@@ -138,20 +138,19 @@ class _DoublyLinkedBase(object):
         return
 
     def reverse(self):
-        # p = self._header._next
-        # q = self._header._next._next
-        # last = self._trailer
-        # p._next = self._trailer
-        # self._trailer._prev = p
-        # while q._next != last:
-        #     r = q._next
-        #     q._next = p
-        #     p._prev = q
-        #     p = q
-        #     q = r
-        # q._prev = self._header
-        # self._header._next = q
-        pass
+        """Reverse a DoublyLinkedList iterative"""
+        p=self._header._next
+        q=p._next
+        p._next=self._trailer
+        self._trailer._prev = p
+        while q != self._trailer:
+            r=q._next
+            q._next=p
+            p._prev=q
+            p=q
+            q=r
+        self._header._next=p
+        p._prev = self._header
 
 #------------Subclass------------------------------------------------------------------------------
 class DoublyLinkedDeque(_DoublyLinkedBase): # note the use of inheritance
@@ -251,9 +250,7 @@ if __name__ == '__main__':
     dd.add_first(8)
     dd.showinfo()
     print ' '
-    dd.reverse()
-    dd.showinfo()
-    print ''
+
     #-----------R-7.8-----------------------------------------------------------------
     print "Test for R-7.8..............................."
     """do has odd number of nodes while de has even"""
@@ -314,6 +311,13 @@ if __name__ == '__main__':
     de.showinfo()
     print 'new list:',
     new_list.showinfo()
+
+    #-----------C-7.33----------------------------------------------------------------
+    print "Test for C-7.33................................"
+    dr = copy.deepcopy(dd)
+    dr.showinfo()
+    dr.reverse()
+    dr.showinfo()
 
     #-----------C-7.34----------------------------------------------------------------
     print "Test for C-7.34................................"
