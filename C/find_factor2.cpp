@@ -23,7 +23,7 @@ void sumofsub(int t, int k ,int r, int& M, bool& flag, bool* X)
                 printf("%d ", i);
             }
         }
-        printf("/n");
+        printf("\n");
     }
     else
     {   // 若第k+1个数满足条件，则递归左子树
@@ -48,14 +48,14 @@ void search(int& N, int& M)
     int sum = (N + 1) * N * 0.5f;
     if (1 > M || sum < M) // 预先排除无解情况
     {
-        printf("not found/n");
+        printf("not found\n");
         return;
     }
     bool f = false;
     sumofsub(0, 1, sum, M, f, X);
     if (!f)
     {
-        printf("not found/n");
+        printf("not found\n");
     }
     free(X);
 }
@@ -63,7 +63,7 @@ void search(int& N, int& M)
 int main()
 {
     int N, M;
-    printf("请输入整数N和M/n");
+    printf("请输入整数N和M\n");
     scanf("%d%d", &N, &M);
     search(N, M);
     return 0;
