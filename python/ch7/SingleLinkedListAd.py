@@ -321,3 +321,99 @@ if __name__ == '__main__':
     z.push(6)
     z.showinfo()
     print ''
+
+    #-----------C-7.42----------------------------------------------------------------
+    print "Test for C-7.42................................"
+    # definition of ScoreBoard class
+    class ScoreBoard(_SingleLinkedBase):
+        class GameEntry:
+            def __init__(self,name,score):
+                self._name = name
+                self._score = score
+
+        def add(self,name,score):
+            e = self.GameEntry(name,score)
+            if self.is_empty():
+                self._add_front(e)
+            else:
+                walk = self._header._next
+                old = walk
+                while walk != self._trailer:
+                    if walk._element._score > e._score:
+                        old = walk
+                        walk = walk._next
+                    else:
+                        break
+                new = self._Node(e,walk)
+                old._next = new
+                self._size += 1
+
+        def showinfo(self):
+            """Show the infomation of current object"""
+            print "ScoreBoard:[",
+            for i in self:
+                print '(',i._name,i._score,')',
+            print "]"
+
+    # test code
+    scoreboard = ScoreBoard()
+    scoreboard.add('messi',100)
+    scoreboard.add('CR',98)
+    scoreboard.add('wayne',80)
+    scoreboard.add('xavi',95)
+    scoreboard.showinfo()
+
+    #-----------P-7.45----------------------------------------------------------------
+    print "Test for P-7.45................................"
+    # definition of SparseArray class
+    class SparseArray():
+        class _Cell:
+            def __init__(self,i,e):
+                self._index = i
+                self._element = e
+
+        def __init__(self):
+            self._data = _SingleLinkedBase()
+            self._size = 0
+
+        def __len__(self):
+            return len(self._data)
+
+        def is_empty(self):
+            return len(self) == 0
+
+        def __setitem__(self,j,e):
+            # search in list to find if j already exist
+            for i in self._data:
+                if i._index == j:
+                    i._element = e
+                    return
+            # j dont't exist in list,so creat a new node
+            new = self._Cell(j,e)
+            self._data._add_front(new)
+            # update the size of instance
+            if j > self._size:
+                self._size = j
+
+        def __getitem__(self,j):
+            # if j is large than size,it means the given index is out of range
+            if j > self._size:
+                raise IndexError('index out of range!')
+                return
+            # search in list to find if j exist
+            for i in self._data:
+                if i._index == j:
+                    return i._element
+            # j dont't exist in list,so return None
+            return None
+
+    # test code
+    sp = SparseArray()
+    sp[10] = 'a'
+    print sp[10]
+    sp[11] = 'b'
+    print len(sp)
+    print sp[1]
+    sp[10] = 100
+    print sp[10]
+

@@ -1,8 +1,9 @@
 """ This module contain a very common usage of algorithm:find sum.
-    Assuming that we have a nondecreasing list,findSum will return a 
+    Assuming that we have a nondecreasing list,findSum will return a
+    list contain all the possible combination of elements which sum
+    equals to V
 """
 def findSum(L,V):
-	# pass
 	i=0
 	j=len(L)-1
 	ret = list()

@@ -2,7 +2,7 @@
 """This module contain an advance ADT implemented by _DoublyLinkedBase
 """
 #------------Import packet-----------------------------------------------------------------------
-from DoublyLinkedList import _DoublyLinkedBase
+from DoublyLinkedList import _DoublyLinkedBase,Empty
 
 #------------Class PositionalList----------------------------------------------------------------
 class PositionalList(_DoublyLinkedBase):
@@ -349,3 +349,63 @@ if __name__ == '__main__':
             return None
     # test code
     print findSum(si,15)
+
+    #-----------P-7.77----------------------------------------------------------------
+    print "Test for P-7.44................................"
+    # definition of TextEditor class
+    class TextEditor():
+        def __init__(self):
+            self._text = PositionalList()
+            self._cursor = self._text.first()
+
+        def __len__(self):
+            return len(self._text)
+
+        def is_empty(self):
+            return len(self._text) ==0
+
+        def insert(self,c):
+            if self.is_empty():
+                self._cursor = self._text.add_first(c)
+            else:
+                self._cursor = self._text.add_after(self._cursor,c)
+
+        def delete(self):
+            if self.is_empty():
+                raise Empty('Text file is empty!')
+            else:
+                new_cursor = self._text.before(self._cursor)
+                self._text.delete(self._cursor)
+                self._cursor = new_cursor
+
+        def left(self):
+            left_node = self._text.before(self._cursor)
+            if left_node == None:
+                print 'already at the beginning!'
+                return
+            self._cursor = left_node
+
+        def right(self):
+            right_node = self._text.after(self._cursor)
+            if right_node == None:
+                print 'already at the end!'
+                return
+            self._cursor = right_node
+
+        def showinfo(self):
+            self._text.showinfo()
+
+    # test code
+    teditor = TextEditor()
+    teditor.insert('a')
+    teditor.insert('b')
+    teditor.insert('c')
+    teditor.left()
+    teditor.left()
+    teditor.left()
+    teditor.insert('d')
+    teditor.right()
+    teditor.right()
+    teditor.insert('e')
+    teditor.delete()
+    teditor.showinfo()
