@@ -177,3 +177,19 @@ class LinkedBinaryTree(BinaryTree):
             node._right = t2._root
             t2._root = None             # set t2 instance to empty
             t2._size = 0
+
+if __name__ == '__main__':
+    T = LinkedBinaryTree()
+    ro = T._add_root(0)
+    T._add_left(ro,1)
+    T._add_right(ro,2)
+
+    # print len(T)
+    m = T.root()
+    # print m.element()
+    l = T.left(m)
+    print l.element()
+    print T.left(l)
+    T._add_left(l,3)
+    print T.num_children(l)
+    # print T.num_children(m)
