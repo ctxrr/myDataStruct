@@ -1,4 +1,6 @@
-
+import sys
+sys.path.append('..')
+from ch7.SingleLinkedListAd import LinkedQueue
 class Tree:
     """Abstract base class representing a tree structure."""
 
@@ -130,11 +132,3 @@ class Tree:
                 for c in self.children(p):
                     fringe.enqueue(c)              # add children to back of queue
 
-    # def testpackage(self):
-    #     print 'test'
-    #     foo = LinkedQueue()
-# if __name__ == '__main__' and __package__ is None:
-    # from ..ch7.SingleLinkedListAd import LinkedQueue
-    # a=Tree()
-    # print a.breadthfirst()
-    # a.root()
