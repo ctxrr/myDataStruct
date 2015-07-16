@@ -1,4 +1,9 @@
+
+#------------Import packet-----------------------------------------------------------------------
 from BinaryTree import BinaryTree
+import copy
+
+#------------Class LinkedBinaryTree--------------------------------------------------------------
 class LinkedBinaryTree(BinaryTree):
     """Linked representation of a binary tree structure."""
 
@@ -50,6 +55,7 @@ class LinkedBinaryTree(BinaryTree):
         """Create an initially empty binary tree."""
         self._root = None
         self._size = 0
+        self._traveral = 3
 
     #-------------------------- public accessors --------------------------
     def __len__(self):
@@ -84,6 +90,31 @@ class LinkedBinaryTree(BinaryTree):
         if node._right is not None:    # right child exists
             count += 1
         return count
+
+    def set_traversal(self,n):
+        """Set the traversal type"""
+        self._traveral = n
+
+    def showtraversal(self):
+        """Show the infomation of the current tree"""
+        print 'BinaryTree traversal in way',self._traveral,':[',
+        for i in self:
+            print i,
+        print ']'
+
+    #-------------------------- override methods --------------------------
+    def inorder(self):
+        """Generate an inorder iteration of positions in the tree."""
+        if not self.is_empty():
+            if self._traveral == 1:
+                for p in self._subtree_inorder1(self.root()):
+                    yield p
+            if self._traveral == 2:
+                for p in self._subtree_inorder2(self.root()):
+                    yield p
+            if self._traveral == 3:
+                for p in self._subtree_inorder3(self.root()):
+                    yield p
 
     #-------------------------- nonpublic mutators --------------------------
     def _add_root(self, e):
@@ -178,18 +209,63 @@ class LinkedBinaryTree(BinaryTree):
             t2._root = None             # set t2 instance to empty
             t2._size = 0
 
+    def _subtree_inorder1(self, p):
+        """Generate an inorder1 iteration of positions in subtree rooted at p."""
+        if self.left(p) is not None:          # if left child exists, traverse its subtree
+            for other in self._subtree_inorder1(self.left(p)):
+                yield other
+        if self.right(p) is not None:         # if right child exists, traverse its subtree
+            for other in self._subtree_inorder1(self.right(p)):
+                yield other
+        yield p                               # visit p between its subtrees
+
+    def _subtree_inorder2(self, p):
+        """Generate an inorder2 iteration of positions in subtree rooted at p."""
+        yield p                               # visit p between its subtrees
+        if self.left(p) is not None:          # if left child exists, traverse its subtree
+            for other in self._subtree_inorder2(self.left(p)):
+                yield other
+        if self.right(p) is not None:         # if right child exists, traverse its subtree
+            for other in self._subtree_inorder2(self.right(p)):
+                yield other
+
+    def _subtree_inorder3(self, p):
+        """Generate an inorder3 iteration of positions in subtree rooted at p.
+           This is the traditional inorder traversal from DSAP
+        """
+        if self.left(p) is not None:          # if left child exists, traverse its subtree
+            for other in self._subtree_inorder3(self.left(p)):
+                yield other
+        yield p                               # visit p between its subtrees
+        if self.right(p) is not None:         # if right child exists, traverse its subtree
+            for other in self._subtree_inorder3(self.right(p)):
+                yield other
+
+#------------Stand alone function--------------------------------------------------------------
+
+#------------Test code-------------------------------------------------------------------------
 if __name__ == '__main__':
+    #-------------------------- Init a tree for further use --------------------
     T = LinkedBinaryTree()
     ro = T._add_root(0)
-    T._add_left(ro,1)
-    T._add_right(ro,2)
+    r1 = T._add_left(ro,1)
+    r2 = T._add_right(ro,2)
+    r3 = T._add_left(r1,3)
+    r4 = T._add_right(r1,4)
+    r5 = T._add_left(r2,5)
+    r6 = T._add_right(r2,6)
+    r7 = T._add_left(r3,7)
+    r8 = T._add_right(r3,8)
+    r9 = T._add_right(r4,9)
+    r10 = T._add_left(r6,10)
+    r11 = T._add_right(r6,11)
 
-    # print len(T)
-    m = T.root()
-    # print m.element()
-    l = T.left(m)
-    print l.element()
-    print T.left(l)
-    T._add_left(l,3)
-    print T.num_children(l)
-    # print T.num_children(m)
+    #-------------------------- Test code for 3 different way of traversal --------------------
+    print "Test for different traversal way.........................."
+    t1 = copy.deepcopy(T)
+    t1.showtraversal()
+    t1.set_traversal(2)
+    t1.showtraversal()
+    t1.set_traversal(1)
+    t1.showtraversal()
+
