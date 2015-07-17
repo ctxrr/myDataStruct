@@ -43,6 +43,18 @@ class BinaryTree(Tree):
             for p in self._subtree_inorder(self.root()):
                 yield p
 
+    def preorder(self):
+        """Generate an inorder iteration of positions in the tree."""
+        if not self.is_empty():
+            for p in self._subtree_preorder(self.root()):
+                yield p
+
+    def postorder(self):
+        """Generate an inorder iteration of positions in the tree."""
+        if not self.is_empty():
+            for p in self._subtree_postorder(self.root()):
+                yield p
+
     def _subtree_inorder(self, p):
         """Generate an inorder iteration of positions in subtree rooted at p."""
         if self.left(p) is not None:          # if left child exists, traverse its subtree
@@ -52,6 +64,26 @@ class BinaryTree(Tree):
         if self.right(p) is not None:         # if right child exists, traverse its subtree
             for other in self._subtree_inorder(self.right(p)):
                 yield other
+
+    def _subtree_preorder(self, p):
+        """Generate an inorder iteration of positions in subtree rooted at p."""
+        yield p                               # visit p between its subtrees
+        if self.left(p) is not None:          # if left child exists, traverse its subtree
+            for other in self._subtree_preorder(self.left(p)):
+                yield other
+        if self.right(p) is not None:         # if right child exists, traverse its subtree
+            for other in self._subtree_preorder(self.right(p)):
+                yield other
+
+    def _subtree_postorder(self, p):
+        """Generate an inorder iteration of positions in subtree rooted at p."""
+        if self.left(p) is not None:          # if left child exists, traverse its subtree
+            for other in self._subtree_postorder(self.left(p)):
+                yield other
+        if self.right(p) is not None:         # if right child exists, traverse its subtree
+            for other in self._subtree_postorder(self.right(p)):
+                yield other
+        yield p                               # visit p between its subtrees
 
     # override inherited version to make inorder the default
     def positions(self):

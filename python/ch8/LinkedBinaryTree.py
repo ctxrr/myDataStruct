@@ -55,7 +55,7 @@ class LinkedBinaryTree(BinaryTree):
         """Create an initially empty binary tree."""
         self._root = None
         self._size = 0
-        self._traveral = 3
+        self._traveral = 'NLR'
 
     #-------------------------- public accessors --------------------------
     def __len__(self):
@@ -91,9 +91,12 @@ class LinkedBinaryTree(BinaryTree):
             count += 1
         return count
 
-    def set_traversal(self,n):
+    def set_traversal(self,mode):
         """Set the traversal type"""
-        self._traveral = n
+        if mode == 'NLR' or mode == 'LRN' or mode == 'LNR':
+            self._traveral = mode
+        else:
+            print 'wrong parameter,keep the traversal mode unchanged'
 
     def showtraversal(self):
         """Show the infomation of the current tree"""
@@ -103,17 +106,17 @@ class LinkedBinaryTree(BinaryTree):
         print ']'
 
     #-------------------------- override methods --------------------------
-    def inorder(self):
-        """Generate an inorder iteration of positions in the tree."""
+    def positions(self):
+        """Generate an iteration of the tree's positions."""
         if not self.is_empty():
-            if self._traveral == 1:
-                for p in self._subtree_inorder1(self.root()):
+            if self._traveral == 'NLR':
+                for p in self._subtree_preorder(self.root()):
                     yield p
-            if self._traveral == 2:
-                for p in self._subtree_inorder2(self.root()):
+            if self._traveral == 'LNR':
+                for p in self._subtree_inorder(self.root()):
                     yield p
-            if self._traveral == 3:
-                for p in self._subtree_inorder3(self.root()):
+            if self._traveral == 'LRN':
+                for p in self._subtree_postorder(self.root()):
                     yield p
 
     #-------------------------- nonpublic mutators --------------------------
@@ -209,39 +212,21 @@ class LinkedBinaryTree(BinaryTree):
             t2._root = None             # set t2 instance to empty
             t2._size = 0
 
-    def _subtree_inorder1(self, p):
-        """Generate an inorder1 iteration of positions in subtree rooted at p."""
-        if self.left(p) is not None:          # if left child exists, traverse its subtree
-            for other in self._subtree_inorder1(self.left(p)):
-                yield other
-        if self.right(p) is not None:         # if right child exists, traverse its subtree
-            for other in self._subtree_inorder1(self.right(p)):
-                yield other
-        yield p                               # visit p between its subtrees
-
-    def _subtree_inorder2(self, p):
-        """Generate an inorder2 iteration of positions in subtree rooted at p."""
-        yield p                               # visit p between its subtrees
-        if self.left(p) is not None:          # if left child exists, traverse its subtree
-            for other in self._subtree_inorder2(self.left(p)):
-                yield other
-        if self.right(p) is not None:         # if right child exists, traverse its subtree
-            for other in self._subtree_inorder2(self.right(p)):
-                yield other
-
-    def _subtree_inorder3(self, p):
-        """Generate an inorder3 iteration of positions in subtree rooted at p.
-           This is the traditional inorder traversal from DSAP
-        """
-        if self.left(p) is not None:          # if left child exists, traverse its subtree
-            for other in self._subtree_inorder3(self.left(p)):
-                yield other
-        yield p                               # visit p between its subtrees
-        if self.right(p) is not None:         # if right child exists, traverse its subtree
-            for other in self._subtree_inorder3(self.right(p)):
-                yield other
-
 #------------Stand alone function--------------------------------------------------------------
+def preorder_indent(T, p, d):
+    print(2*d*' ' + str(p.element())) # use depth for indentation
+    for c in T.children(p):
+        preorder_indent(T, c, d+1)
+#def preorder_indent2(T,p,d):
+
+def preorder_label(T, p, d, path):
+    label ='.'.join(str(j) for j in path) # displayed labels are one-indexed
+    print 2*d*' '+ label,p.element()
+    path.append(1) # path entries are zero-indexed
+    for c in T.children(p):
+        preorder_label(T, c, d+1, path) # child depth is d+1
+        path[-1] += 1
+    path.pop()
 
 #------------Test code-------------------------------------------------------------------------
 if __name__ == '__main__':
@@ -264,8 +249,24 @@ if __name__ == '__main__':
     print "Test for different traversal way.........................."
     t1 = copy.deepcopy(T)
     t1.showtraversal()
-    t1.set_traversal(2)
+    t1.set_traversal('LNR')
     t1.showtraversal()
-    t1.set_traversal(1)
+    t1.set_traversal('LRN')
     t1.showtraversal()
 
+    #-------------------------- Test code for traversal of table of contents --------------------
+    print "Test for print table of contents.........................."
+    table = LinkedBinaryTree()
+    ta0 = table._add_root('Paper')
+    ta1 = table._add_left(ta0,'Title')
+    ta2 = table._add_right(ta0,'Abstract')
+    ta3 = table._add_left(ta2,'1.1')
+    ta4 = table._add_right(ta2,'1.2')
+    # tradition way,waste of time
+    for i in table.preorder():
+        print(2*table.depth(i)*' '+str(i.element()))
+    # more efficient way
+    preorder_indent(table,ta0,0)
+
+    path=[2,3]
+    preorder_label(table,ta0,0,path)
