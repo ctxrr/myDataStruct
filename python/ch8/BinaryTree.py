@@ -18,6 +18,34 @@ class BinaryTree(Tree):
         """
         raise NotImplementedError('must be implemented by subclass')
 
+    def is_left_leaf(self, p):
+        """Return True if Position p is the left leaf of its parent."""
+        raise NotImplementedError('must be implemented by subclass')
+
+    def is_right_leaf(self, p):
+        """Return True if Position p is the right leaf of its parent."""
+        raise NotImplementedError('must be implemented by subclass')
+
+    def add_root(self, e):
+        """Add root node"""
+        raise NotImplementedError('must be implemented by subclass')
+
+    def add_left(self, p, e):
+        """Add left child"""
+        raise NotImplementedError('must be implemented by subclass')
+
+    def add_right(self, p, e):
+        """Add right child"""
+        raise NotImplementedError('must be implemented by subclass')
+
+    def replace(self, p, e):
+        """Replace the element stored in p into e"""
+        raise NotImplementedError('must be implemented by subclass')
+
+    def delete(self, p):
+        """Delete the node p"""
+        raise NotImplementedError('must be implemented by subclass')
+
     # ---------- concrete methods implemented in this class ----------
     def sibling(self, p):
         """Return a Position representing p's sibling (or None if no sibling)."""

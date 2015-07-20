@@ -91,6 +91,61 @@ class LinkedBinaryTree(BinaryTree):
             count += 1
         return count
 
+    def is_left_leaf(self, p):
+        """Return True if Position p is the left leaf of its parent."""
+        return self.is_leaf(p) and p==self.left(self.parent(p))
+
+    def is_right_leaf(self, p):
+        """Return True if Position p is the right leaf of its parent."""
+        return self.is_leaf(p) and p==self.right(self.parent(p))
+
+    def add_root(self, e):
+        """Add root node"""
+        return self._add_root(e)
+
+    def add_left(self, p, e):
+        """Add left child"""
+        return self._add_left(p,e)
+
+    def add_right(self, p, e):
+        """Add right child"""
+        return self._add_right(p,e)
+
+    def replace(self, p, e):
+        """Replace the element stored in p into e"""
+        return self._replace(p,e)
+
+    def delete(self, p):
+        """Delete the node p"""
+        return self._delete(p)
+
+    #-------------------------- override accessors methods -----------------
+    def positions(self):
+        """Generate an iteration of the tree's positions."""
+        if not self.is_empty():
+            if self._traveral == 'NLR':
+                for p in self._subtree_preorder(self.root()):
+                    yield p
+            if self._traveral == 'LNR':
+                for p in self._subtree_inorder(self.root()):
+                    yield p
+            if self._traveral == 'LRN':
+                for p in self._subtree_postorder(self.root()):
+                    yield p
+
+    # --------------------- additional public methods ---------------------
+    def addsibling(self,p,e):
+        """Add a new Position representing p's sibling if p don't have sibling"""
+        if self.sibling(p):
+            print 'already have sibling ,operation forbidden!'
+            return
+        else:
+            parent = self.parent(p)
+            if p == self.left(parent):
+                return self._add_right(parent,e)         # possibly None
+            else:
+                return self._add_left(parent,e)
+
     def set_traversal(self,mode):
         """Set the traversal type"""
         if mode == 'NLR' or mode == 'LRN' or mode == 'LNR':
@@ -104,20 +159,6 @@ class LinkedBinaryTree(BinaryTree):
         for i in self:
             print i,
         print ']'
-
-    #-------------------------- override methods --------------------------
-    def positions(self):
-        """Generate an iteration of the tree's positions."""
-        if not self.is_empty():
-            if self._traveral == 'NLR':
-                for p in self._subtree_preorder(self.root()):
-                    yield p
-            if self._traveral == 'LNR':
-                for p in self._subtree_inorder(self.root()):
-                    yield p
-            if self._traveral == 'LRN':
-                for p in self._subtree_postorder(self.root()):
-                    yield p
 
     #-------------------------- nonpublic mutators --------------------------
     def _add_root(self, e):
@@ -217,7 +258,6 @@ def preorder_indent(T, p, d):
     print(2*d*' ' + str(p.element())) # use depth for indentation
     for c in T.children(p):
         preorder_indent(T, c, d+1)
-#def preorder_indent2(T,p,d):
 
 def preorder_label(T, p, d, path):
     label ='.'.join(str(j) for j in path) # displayed labels are one-indexed
@@ -228,22 +268,40 @@ def preorder_label(T, p, d, path):
         path[-1] += 1
     path.pop()
 
+def arithmetic_expression(T,p):
+    """Caculate the result of an arithmetic expression implemented by a BinaryTree"""
+    if T.is_leaf(p):
+        return p.element()
+    else:
+        if p.element() =='+':
+            return arithmetic_expression(T,T.left(p)) + arithmetic_expression(T,T.right(p))
+        if p.element() =='-':
+            return arithmetic_expression(T,T.left(p)) - arithmetic_expression(T,T.right(p))
+        if p.element() =='*':
+            return arithmetic_expression(T,T.left(p)) * arithmetic_expression(T,T.right(p))
+        if p.element() =='/':
+            return arithmetic_expression(T,T.left(p)) / arithmetic_expression(T,T.right(p))
+
 #------------Test code-------------------------------------------------------------------------
 if __name__ == '__main__':
     #-------------------------- Init a tree for further use --------------------
     T = LinkedBinaryTree()
-    ro = T._add_root(0)
-    r1 = T._add_left(ro,1)
-    r2 = T._add_right(ro,2)
-    r3 = T._add_left(r1,3)
-    r4 = T._add_right(r1,4)
-    r5 = T._add_left(r2,5)
-    r6 = T._add_right(r2,6)
-    r7 = T._add_left(r3,7)
-    r8 = T._add_right(r3,8)
-    r9 = T._add_right(r4,9)
-    r10 = T._add_left(r6,10)
-    r11 = T._add_right(r6,11)
+    ro = T.add_root(0)
+    r1 = T.add_left(ro,1)
+    r2 = T.add_right(ro,2)
+    r3 = T.add_left(r1,3)
+    r4 = T.add_right(r1,4)
+    r5 = T.add_left(r2,5)
+    r6 = T.add_right(r2,6)
+    r7 = T.add_left(r3,7)
+    r8 = T.add_right(r3,8)
+    r9 = T.add_right(r4,9)
+    r10 = T.add_left(r6,10)
+    r11 = T.add_right(r6,11)
+    r12 = T.add_left(r8,12)
+    r13 = T.add_left(r10,13)
+    r14 = T.add_right(r11,14)
+    print ''
 
     #-------------------------- Test code for 3 different way of traversal --------------------
     print "Test for different traversal way.........................."
@@ -253,15 +311,16 @@ if __name__ == '__main__':
     t1.showtraversal()
     t1.set_traversal('LRN')
     t1.showtraversal()
+    print ''
 
     #-------------------------- Test code for traversal of table of contents --------------------
     print "Test for print table of contents.........................."
     table = LinkedBinaryTree()
-    ta0 = table._add_root('Paper')
-    ta1 = table._add_left(ta0,'Title')
-    ta2 = table._add_right(ta0,'Abstract')
-    ta3 = table._add_left(ta2,'1.1')
-    ta4 = table._add_right(ta2,'1.2')
+    ta0 = table.add_root('Paper')
+    ta1 = table.add_left(ta0,'Title')
+    ta2 = table.add_right(ta0,'Abstract')
+    ta3 = table.add_left(ta2,'1.1')
+    ta4 = table.add_right(ta2,'1.2')
     # tradition way,waste of time
     for i in table.preorder():
         print(2*table.depth(i)*' '+str(i.element()))
@@ -270,3 +329,53 @@ if __name__ == '__main__':
 
     path=[2,3]
     preorder_label(table,ta0,0,path)
+    print ''
+
+    #-----------R-8.5----------------------------------------------------------------
+    print "Test for R-8.5................................"
+    t2 = copy.deepcopy(T)
+    leftcount = 0
+    rightcount = 0
+    for i in t2.inorder():
+        if t2.is_left_leaf(i):
+            leftcount += 1
+        if t2.is_right_leaf(i):
+            rightcount += 1
+    print 'left is:',leftcount,'.','right is:',rightcount
+    print ''
+
+    #-----------R-8.6----------------------------------------------------------------
+    print "Test for R-8.6................................"
+    t3 = copy.deepcopy(T)
+    tr12 = copy.deepcopy(r12)
+
+    singlecount = 0
+    for i in t3.inorder():
+        if t3.left(i) == None and t3.right(i) != None:
+            t3.add_left(i,'Orz')
+            singlecount += 1
+        elif t3.right(i) == None and t3.left(i) != None:
+            t3.add_right(i,'Orz')
+            singlecount += 1
+    print 'use proper tree represent improper tree: add addtional',singlecount,'nodes'
+    t3.showtraversal()
+    print ''
+
+    #-----------R-8.13----------------------------------------------------------------
+    print "Test for R-8.13................................"
+    arith = LinkedBinaryTree()
+    ari0 = arith.add_root('*')
+    ari1 = arith.add_left(ari0,'+')
+    ari2 = arith.add_right(ari0,'-')
+    ari3 = arith.add_left(ari1,2)
+    ari4 = arith.add_right(ari1,1)
+    ari5 = arith.add_left(ari2,5)
+    ari6 = arith.add_right(ari2,2)
+    print 'expression info:',
+    for i in arith.inorder():
+        print i.element(),
+    print ''
+    print 'result is:',arithmetic_expression(arith,ari0)
+    print ''
+
+
