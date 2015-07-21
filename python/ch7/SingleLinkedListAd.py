@@ -198,7 +198,7 @@ class LinkedQueue(_SingleLinkedBase):
         """Remove and return the first element of the queue (i.e., FIFO).
            Raise Empty exception if the queue is empty.
         """
-        self._del_front()
+        return self._del_front()
 
     def enqueue(self, e):
         """Add an element to the back of queue."""
@@ -271,7 +271,6 @@ if __name__ == '__main__':
     lq.dequeue()
     lq.enqueue('a')
     lq.showinfo()
-    print 'first element is',lq.first()
     print ''
 
     #-----------R-7.1----------------------------------------------------------------
