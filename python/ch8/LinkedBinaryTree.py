@@ -311,11 +311,17 @@ def arithmetic_expression(T,p):
         if p.element() =='/':
             return arithmetic_expression(T,T.left(p)) / arithmetic_expression(T,T.right(p))
 
-#def sumEPL(T,p,value):
-    #if p==None:
-        #return 0
-    ##return (value + (sumEPL(T,T.left(p),value+1) if T.left(p)!=None else 0) + (sumEPL(T,T.right(p),value+1) if T.right(p)!=None else 0)
-    #return (value + sumEPL(T,T.left(p),value+1) + sumEPL(T,T.right(p),value+1)) if (T.left(p) and T.right(p)) else 0
+def sumIPL(T,p,value):
+    if T.num_children(p)==0:
+        return 0
+    else:
+        return (value + (sumIPL(T,T.left(p),value+1) if T.left(p) else 0) + (sumIPL(T,T.right(p),value+1) if T.right(p) else 0))
+
+def sumEPL(T,p,value):
+    if T.num_children(p)==0:
+        return value
+    else:
+        return (sumEPL(T,T.left(p),value+1) if T.left(p) else 0) + (sumEPL(T,T.right(p),value+1) if T.right(p) else 0)
 #------------Test code-------------------------------------------------------------------------
 if __name__ == '__main__':
     #-------------------------- Init a tree for further use --------------------
