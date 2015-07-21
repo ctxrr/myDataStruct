@@ -55,7 +55,6 @@ class LinkedBinaryTree(BinaryTree):
         """Create an initially empty binary tree."""
         self._root = None
         self._size = 0
-        self._traveral = 'NLR'
 
     #-------------------------- public accessors --------------------------
     def __len__(self):
@@ -123,15 +122,8 @@ class LinkedBinaryTree(BinaryTree):
     def positions(self):
         """Generate an iteration of the tree's positions."""
         if not self.is_empty():
-            if self._traveral == 'NLR':
-                for p in self._subtree_preorder(self.root()):
-                    yield p
-            if self._traveral == 'LNR':
-                for p in self._subtree_inorder(self.root()):
-                    yield p
-            if self._traveral == 'LRN':
-                for p in self._subtree_postorder(self.root()):
-                    yield p
+            for p in self._subtree_preorder(self.root()):
+                yield p
 
     # --------------------- additional public methods ---------------------
     def addsibling(self,p,e):
@@ -146,20 +138,45 @@ class LinkedBinaryTree(BinaryTree):
             else:
                 return self._add_left(parent,e)
 
-    def set_traversal(self,mode):
-        """Set the traversal type"""
-        if mode == 'NLR' or mode == 'LRN' or mode == 'LNR':
-            self._traveral = mode
-        else:
-            print 'wrong parameter,keep the traversal mode unchanged'
-
-    def showtraversal(self):
-        """Show the infomation of the current tree"""
-        print 'BinaryTree traversal in way',self._traveral,':[',
-        for i in self:
-            print i,
+    def pretraversal(self):
+        """Show the infomation of the current tree in preorder traversal"""
+        print 'BinaryTree traversal in preorder :[',
+        for i in self.preorder():
+            print i.element(),
         print ']'
 
+    def intraversal(self):
+        """Show the infomation of the current tree in inorder traversal"""
+        print 'BinaryTree traversal in inorder  :[',
+        for i in self.inorder():
+            print i.element(),
+        print ']'
+
+    def posttraversal(self):
+        """Show the infomation of the current tree in postorder traversal"""
+        print 'BinaryTree traversal in postorder:[',
+        for i in self.postorder():
+            print i.element(),
+        print ']'
+
+    def breadthfirsttraversal(self):
+        """Show the infomation of the current tree in breadthfirst traversal"""
+        print 'BinaryTree traversal in breadth first order:[',
+        for i in self.breadthfirst():
+            print i.element(),
+        print ']'
+
+    #def sumEPL(self,p,depth):
+        #if self.is_root(p):
+            #epl = 0
+            #ipl = 0
+        #if self.is_leaf(p):
+            #epl += depth
+            #return (epl,ipl)
+        #else:
+            #ipl += depth
+            #for i in self.children(p):
+    #            self.sumEPL(i,depth+1)
     #-------------------------- nonpublic mutators --------------------------
     def _add_root(self, e):
         """Place element e at the root of an empty tree and return new Position.
@@ -255,7 +272,7 @@ class LinkedBinaryTree(BinaryTree):
 
 #------------Stand alone function--------------------------------------------------------------
 def preorder_indent(T, p, d):
-    print(2*d*' ' + str(p.element())) # use depth for indentation
+    print 2*d*' ' + str(p.element()) # use depth for indentation
     for c in T.children(p):
         preorder_indent(T, c, d+1)
 
@@ -267,6 +284,18 @@ def preorder_label(T, p, d, path):
         preorder_label(T, c, d+1, path) # child depth is d+1
         path[-1] += 1
     path.pop()
+
+def parenthesize(T, p):
+    """Print parenthesized representation of subtree of T rooted at p."""
+    print p.element(), # use of end avoids trailing newline
+    if not T.is_leaf(p):
+        first_time = True
+        for c in T.children(p):
+            sep ='(' if first_time else ',' # determine proper separator
+            print sep,
+            first_time = False # any future passes will not be the first
+            parenthesize(T, c) # recur on child
+        print ')', # include closing parenthesis
 
 def arithmetic_expression(T,p):
     """Caculate the result of an arithmetic expression implemented by a BinaryTree"""
@@ -282,6 +311,11 @@ def arithmetic_expression(T,p):
         if p.element() =='/':
             return arithmetic_expression(T,T.left(p)) / arithmetic_expression(T,T.right(p))
 
+#def sumEPL(T,p,value):
+    #if p==None:
+        #return 0
+    ##return (value + (sumEPL(T,T.left(p),value+1) if T.left(p)!=None else 0) + (sumEPL(T,T.right(p),value+1) if T.right(p)!=None else 0)
+    #return (value + sumEPL(T,T.left(p),value+1) + sumEPL(T,T.right(p),value+1)) if (T.left(p) and T.right(p)) else 0
 #------------Test code-------------------------------------------------------------------------
 if __name__ == '__main__':
     #-------------------------- Init a tree for further use --------------------
@@ -306,11 +340,10 @@ if __name__ == '__main__':
     #-------------------------- Test code for 3 different way of traversal --------------------
     print "Test for different traversal way.........................."
     t1 = copy.deepcopy(T)
-    t1.showtraversal()
-    t1.set_traversal('LNR')
-    t1.showtraversal()
-    t1.set_traversal('LRN')
-    t1.showtraversal()
+    t1.pretraversal()
+    t1.intraversal()
+    t1.posttraversal()
+    t1.breadthfirsttraversal()
     print ''
 
     #-------------------------- Test code for traversal of table of contents --------------------
@@ -329,6 +362,9 @@ if __name__ == '__main__':
 
     path=[2,3]
     preorder_label(table,ta0,0,path)
+    print ''
+
+    parenthesize(table,ta0)
     print ''
 
     #-----------R-8.5----------------------------------------------------------------
@@ -358,7 +394,7 @@ if __name__ == '__main__':
             t3.add_right(i,'Orz')
             singlecount += 1
     print 'use proper tree represent improper tree: add addtional',singlecount,'nodes'
-    t3.showtraversal()
+    t3.pretraversal()
     print ''
 
     #-----------R-8.13----------------------------------------------------------------
@@ -372,10 +408,50 @@ if __name__ == '__main__':
     ari5 = arith.add_left(ari2,5)
     ari6 = arith.add_right(ari2,2)
     print 'expression info:',
-    for i in arith.inorder():
-        print i.element(),
+    arith.intraversal()
     print ''
     print 'result is:',arithmetic_expression(arith,ari0)
     print ''
 
+    #-----------R-8.20----------------------------------------------------------------
+    print "Test for R-8.20................................"
+    tree20 = LinkedBinaryTree()
+    t200 = tree20.add_root('E')
+    t201 = tree20.add_left(t200,'X')
+    t202 = tree20.add_right(t200,'N')
+    t203 = tree20.add_left(t201,'A')
+    t204 = tree20.add_right(t201,'U')
+    t205 = tree20.add_left(t203,'M')
+    t206 = tree20.add_right(t203,'F')
+    tree20.pretraversal()
+    tree20.intraversal()
+
+
+    #-----------R-8.23----------------------------------------------------------------
+    print "Test for R-8.23................................"
+    """ It is 'not possible' that the preorder traversal of tta visits
+        the nodes in the same order of the postorder traversal of tta.
+    """
+    tta = LinkedBinaryTree()
+    tt0 = tta.add_root('A')
+    tt1 = tta.add_left(tt0,'B')
+    tt2 = tta.add_left(tt1,'C')
+    tt3 = tta.add_left(tt2,'D')
+    tt4 = tta.add_left(tt3,'E')
+    tta.pretraversal()
+    tta.posttraversal()
+    print ''
+
+    """ It is 'possible' that the preorder traversal of ttb visits
+        the nodes in the reverse order of the postorder traversal of ttb.
+    """
+    ttb = LinkedBinaryTree()
+    tt5 = ttb.add_root('A')
+    tt6 = ttb.add_right(tt5,'B')
+    tt7 = ttb.add_right(tt6,'C')
+    tt8 = ttb.add_right(tt7,'D')
+    tt9 = ttb.add_right(tt8,'E')
+    ttb.pretraversal()
+    ttb.posttraversal()
+    print ''
 
