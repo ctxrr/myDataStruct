@@ -114,9 +114,17 @@ class LinkedBinaryTree(BinaryTree):
         """Replace the element stored in p into e"""
         return self._replace(p,e)
 
+    def swap(self,p,q):
+        """Swap the node p and q"""
+        return self._swap(p,q)
+
     def delete(self, p):
         """Delete the node p"""
         return self._delete(p)
+
+    def delete_subtree(self,p):
+        """Delete the subtrees of node p"""
+        return self._delete_subtree(p)
 
     #-------------------------- override accessors methods -----------------
     def positions(self):
@@ -166,17 +174,6 @@ class LinkedBinaryTree(BinaryTree):
             print i.element(),
         print ']'
 
-    #def sumEPL(self,p,depth):
-        #if self.is_root(p):
-            #epl = 0
-            #ipl = 0
-        #if self.is_leaf(p):
-            #epl += depth
-            #return (epl,ipl)
-        #else:
-            #ipl += depth
-            #for i in self.children(p):
-    #            self.sumEPL(i,depth+1)
     #-------------------------- nonpublic mutators --------------------------
     def _add_root(self, e):
         """Place element e at the root of an empty tree and return new Position.
@@ -222,6 +219,49 @@ class LinkedBinaryTree(BinaryTree):
         node._element = e
         return old
 
+    def _swap(self,p,q):
+        """Swap the node p and q"""
+        nodep = self._validate(p)
+        nodeq = self._validate(q)
+        parent_p = self._validate(self.parent(p))
+        left_p = self._validate(self.left(p))
+        right_p = self._validate(self.right(p))
+        parent_q = self._validate(self.parent(q))
+        left_q = self._validate(self.left(q))
+        right_q = self._validate(self.right(q))
+
+        p._parent = parent_q
+        q._parent = parent_p
+        p._left = left_q
+        p._right = right_q
+        q._left = left_p
+        q._right = right_p
+
+        if parent_p:
+            if nodep == parent_p._left:
+                parent_p._left = nodeq
+            else:
+                parent_p._right = nodeq
+
+        if parent_q:
+            if nodeq == parent_q._left:
+                parent_q._left = nodep
+            else:
+                parent_q._right = nodep
+
+        if left_p:
+            left_p._parent = nodeq
+
+        if right_p:
+            right_p._parent = nodeq
+
+        if left_q:
+            left_q._parent = nodep
+
+        if right_q:
+            right_q._parent = nodep
+        #pass
+
     def _delete(self, p):
         """Delete the node at Position p, and replace it with its child, if any.
 
@@ -245,6 +285,22 @@ class LinkedBinaryTree(BinaryTree):
         self._size -= 1
         node._parent = node              # convention for deprecated node
         return node._element
+
+    def _delete_subtree(self,p):
+        """Delete the subtrees of node at Position p.
+
+        Return the number of element that had been deleted.
+        """
+        rmsize = 0
+        node = self._validate(p)
+        #for i in self.preorder(p):
+        for i in self._subtree_postorder(p):
+            rmsize += 1
+        rmsize -= 1
+        node._left = None
+        node._right = None
+        self._size -= rmsize
+        return rmsize
 
     def _attach(self, p, t1, t2):
         """Attach trees t1 and t2, respectively, as the left and right subtrees of the external Position p.
@@ -312,23 +368,40 @@ def arithmetic_expression(T,p):
             return arithmetic_expression(T,T.left(p)) / arithmetic_expression(T,T.right(p))
 
 def sumIPL(T,p,value):
+    """Caculate the internal path length of T"""
     if T.num_children(p)==0:
         return 0
     else:
         return (value + (sumIPL(T,T.left(p),value+1) if T.left(p) else 0) + (sumIPL(T,T.right(p),value+1) if T.right(p) else 0))
 
 def sumEPL(T,p,value):
+    """Caculate the external path length of T"""
     if T.num_children(p)==0:
         return value
     else:
         return (sumEPL(T,T.left(p),value+1) if T.left(p) else 0) + (sumEPL(T,T.right(p),value+1) if T.right(p) else 0)
+
+def numIN(T,p):
+    """Caculate the internal node number of T"""
+    if T.num_children(p)==0:
+        return 0
+    else:
+        return 1 + (numIN(T,T.left(p)) if T.left(p) else 0) + (numIN(T,T.right(p)) if T.right(p) else 0)
+
+def numEN(T,p):
+    """Caculate the external node number of T"""
+    if T.num_children(p)==0:
+        return 1
+    else:
+        return (numEN(T,T.left(p)) if T.left(p) else 0) + (numEN(T,T.right(p)) if T.right(p) else 0)
+
 #------------Test code-------------------------------------------------------------------------
 if __name__ == '__main__':
     #-------------------------- Init a tree for further use --------------------
     T = LinkedBinaryTree()
-    ro = T.add_root(0)
-    r1 = T.add_left(ro,1)
-    r2 = T.add_right(ro,2)
+    r0 = T.add_root(0)
+    r1 = T.add_left(r0,1)
+    r2 = T.add_right(r0,2)
     r3 = T.add_left(r1,3)
     r4 = T.add_right(r1,4)
     r5 = T.add_left(r2,5)
@@ -354,110 +427,194 @@ if __name__ == '__main__':
 
     #-------------------------- Test code for traversal of table of contents --------------------
     print "Test for print table of contents.........................."
-    table = LinkedBinaryTree()
-    ta0 = table.add_root('Paper')
-    ta1 = table.add_left(ta0,'Title')
-    ta2 = table.add_right(ta0,'Abstract')
-    ta3 = table.add_left(ta2,'1.1')
-    ta4 = table.add_right(ta2,'1.2')
+    t2 = LinkedBinaryTree()
+    t2n0 = t2.add_root('Paper')
+    t2n1 = t2.add_left(t2n0,'Title')
+    t2n2 = t2.add_right(t2n0,'Abstract')
+    t2n3 = t2.add_left(t2n2,'1.1')
+    t2n4 = t2.add_right(t2n2,'1.2')
     # tradition way,waste of time
-    for i in table.preorder():
-        print(2*table.depth(i)*' '+str(i.element()))
+    for i in t2.preorder():
+        print(2*t2.depth(i)*' '+str(i.element()))
     # more efficient way
-    preorder_indent(table,ta0,0)
+    preorder_indent(t2,t2n0,0)
 
     path=[2,3]
-    preorder_label(table,ta0,0,path)
+    preorder_label(t2,t2n0,0,path)
     print ''
 
-    parenthesize(table,ta0)
+    parenthesize(t2,t2n0)
+    print ''
     print ''
 
     #-----------R-8.5----------------------------------------------------------------
     print "Test for R-8.5................................"
-    t2 = copy.deepcopy(T)
+    tree5 = copy.deepcopy(T)
     leftcount = 0
     rightcount = 0
-    for i in t2.inorder():
-        if t2.is_left_leaf(i):
+    for i in tree5.inorder():
+        if tree5.is_left_leaf(i):
             leftcount += 1
-        if t2.is_right_leaf(i):
+        if tree5.is_right_leaf(i):
             rightcount += 1
     print 'left is:',leftcount,'.','right is:',rightcount
     print ''
 
     #-----------R-8.6----------------------------------------------------------------
     print "Test for R-8.6................................"
-    t3 = copy.deepcopy(T)
-    tr12 = copy.deepcopy(r12)
+    tree6 = copy.deepcopy(T)
 
     singlecount = 0
-    for i in t3.inorder():
-        if t3.left(i) == None and t3.right(i) != None:
-            t3.add_left(i,'Orz')
+    for i in tree6.inorder():
+        if tree6.left(i) == None and tree6.right(i) != None:
+            tree6.add_left(i,'Orz')
             singlecount += 1
-        elif t3.right(i) == None and t3.left(i) != None:
-            t3.add_right(i,'Orz')
+        elif tree6.right(i) == None and tree6.left(i) != None:
+            tree6.add_right(i,'Orz')
             singlecount += 1
     print 'use proper tree represent improper tree: add addtional',singlecount,'nodes'
-    t3.pretraversal()
+    tree6.pretraversal()
     print ''
 
     #-----------R-8.13----------------------------------------------------------------
     print "Test for R-8.13................................"
-    arith = LinkedBinaryTree()
-    ari0 = arith.add_root('*')
-    ari1 = arith.add_left(ari0,'+')
-    ari2 = arith.add_right(ari0,'-')
-    ari3 = arith.add_left(ari1,2)
-    ari4 = arith.add_right(ari1,1)
-    ari5 = arith.add_left(ari2,5)
-    ari6 = arith.add_right(ari2,2)
+    tree13 = LinkedBinaryTree()
+    t13n0 = tree13.add_root('*')
+    t13n1 = tree13.add_left(t13n0,'+')
+    t13n2 = tree13.add_right(t13n0,'-')
+    t13n3 = tree13.add_left(t13n1,2)
+    t13n4 = tree13.add_right(t13n1,1)
+    t13n5 = tree13.add_left(t13n2,5)
+    t13n6 = tree13.add_right(t13n2,2)
     print 'expression info:',
-    arith.intraversal()
+    tree13.intraversal()
     print ''
-    print 'result is:',arithmetic_expression(arith,ari0)
+    print 'result is:',arithmetic_expression(tree13,t13n0)
     print ''
 
     #-----------R-8.20----------------------------------------------------------------
     print "Test for R-8.20................................"
     tree20 = LinkedBinaryTree()
-    t200 = tree20.add_root('E')
-    t201 = tree20.add_left(t200,'X')
-    t202 = tree20.add_right(t200,'N')
-    t203 = tree20.add_left(t201,'A')
-    t204 = tree20.add_right(t201,'U')
-    t205 = tree20.add_left(t203,'M')
-    t206 = tree20.add_right(t203,'F')
+    t20n0 = tree20.add_root('E')
+    t20n1 = tree20.add_left(t20n0,'X')
+    t20n2 = tree20.add_right(t20n0,'N')
+    t20n3 = tree20.add_left(t20n1,'A')
+    t20n4 = tree20.add_right(t20n1,'U')
+    t20n5 = tree20.add_left(t20n3,'M')
+    t20n6 = tree20.add_right(t20n3,'F')
     tree20.pretraversal()
     tree20.intraversal()
-
+    print ''
 
     #-----------R-8.23----------------------------------------------------------------
     print "Test for R-8.23................................"
     """ It is 'not possible' that the preorder traversal of tta visits
         the nodes in the same order of the postorder traversal of tta.
     """
-    tta = LinkedBinaryTree()
-    tt0 = tta.add_root('A')
-    tt1 = tta.add_left(tt0,'B')
-    tt2 = tta.add_left(tt1,'C')
-    tt3 = tta.add_left(tt2,'D')
-    tt4 = tta.add_left(tt3,'E')
-    tta.pretraversal()
-    tta.posttraversal()
+    tree23 = LinkedBinaryTree()
+    t23n0 = tree23.add_root('A')
+    t23n1 = tree23.add_left(t23n0,'B')
+    t23n2 = tree23.add_left(t23n1,'C')
+    t23n3 = tree23.add_left(t23n2,'D')
+    t23n4 = tree23.add_left(t23n3,'E')
+    tree23.pretraversal()
+    tree23.posttraversal()
     print ''
 
     """ It is 'possible' that the preorder traversal of ttb visits
         the nodes in the reverse order of the postorder traversal of ttb.
     """
-    ttb = LinkedBinaryTree()
-    tt5 = ttb.add_root('A')
-    tt6 = ttb.add_right(tt5,'B')
-    tt7 = ttb.add_right(tt6,'C')
-    tt8 = ttb.add_right(tt7,'D')
-    tt9 = ttb.add_right(tt8,'E')
-    ttb.pretraversal()
-    ttb.posttraversal()
+    tree23 = LinkedBinaryTree()
+    t23n0 = tree23.add_root('A')
+    t23n1 = tree23.add_right(t23n0,'B')
+    t23n2 = tree23.add_right(t23n1,'C')
+    t23n3 = tree23.add_right(t23n2,'D')
+    t23n4 = tree23.add_right(t23n3,'E')
+    tree23.pretraversal()
+    tree23.posttraversal()
     print ''
 
+    #-----------C-8.31----------------------------------------------------------------
+    print "Test for C-8.31................................"
+    tree31 = copy.deepcopy(T)
+    t31n0 = tree31.root()
+    print 'the sum of external path length is:',sumEPL(tree31,t31n0,0)
+    print 'the sum of internal path length is:',sumIPL(tree31,t31n0,0)
+    print 'the sum of external node number is:',numEN(tree31,t31n0)
+    print 'the sum of internal node number is:',numIN(tree31,t31n0)
+    print ''
+    #-----------C-8.35----------------------------------------------------------------
+    print "Test for C-8.35................................"
+
+    # definition of isomorphic_tree function
+    def isomorphic_tree(T1,T2,p1,p2):
+        if T1.is_leaf(p1) and T2.is_leaf(p2):
+            return True
+        elif T1.num_children(p1) != T2.num_children(p2):
+            return False
+        else:
+            m = T2.children(p2)
+            for i in T1.children(p1):
+                j=m.next()
+                if not isomorphic_tree(T1,T2,i,j):
+                    return False
+            return True
+
+    # init two isomorphic binarytree for test
+    tree35a = LinkedBinaryTree()
+    t35a0 = tree35a.add_root(1)
+    t35a1 = tree35a.add_left(t35a0,2)
+    t35a2 = tree35a.add_right(t35a0,2)
+    t35a3 = tree35a.add_left(t35a1,2)
+    t35a4 = tree35a.add_right(t35a1,2)
+    t35a5 = tree35a.add_left(t35a2,2)
+    t35a6 = tree35a.add_right(t35a2,2)
+    t35a7 = tree35a.add_left(t35a3,2)
+
+    tree35b = LinkedBinaryTree()
+    t35b0 = tree35b.add_root(0)
+    t35b1 = tree35b.add_left(t35b0,2)
+    t35b2 = tree35b.add_right(t35b0,2)
+    t35b3 = tree35b.add_left(t35b1,2)
+    t35b4 = tree35b.add_right(t35b1,2)
+    t35b5 = tree35b.add_left(t35b2,2)
+    t35b6 = tree35b.add_right(t35b2,2)
+    t35b7 = tree35b.add_left(t35b3,2)
+
+    # test result
+    print 'Result of isomorphic:',isomorphic_tree(tree35a,tree35b,t35a0,t35b0)
+    # modify T2 to let T1 and T2 be un-isomorphic
+    tree35b.delete(t35b7)
+    print 'delete a node from T2....'
+    # test result
+    print 'Result of isomorphic:',isomorphic_tree(tree35a,tree35b,t35a0,t35b0)
+    print ''
+
+    #-----------C-8.38----------------------------------------------------------------
+    print "Test for C-8.38................................"
+    tree38 = copy.deepcopy(T)
+    tree38.pretraversal()
+    tree38n0 = tree38.root()
+    tree38n1 = tree38.left(tree38n0)
+    tree38n2 = tree38.right(tree38n0)
+    print 'delete:',tree38.delete_subtree(tree38n2),'nodes'
+    tree38.pretraversal()
+    print 'delete:',tree38.delete_subtree(tree38n1),'nodes'
+    tree38.pretraversal()
+    print ''
+
+    #-----------C-8.39----------------------------------------------------------------
+    print "Test for C-8.39................................"
+    tree39 = copy.deepcopy(T)
+    tree39n0 = tree39.root()
+    tree39n1 = tree39.left(tree39n0)
+    tree39n2 = tree39.right(tree39n0)
+    tree39n3 = tree39.left(tree39n1)
+    tree39n4 = tree39.right(tree39n1)
+    tree39n9 = tree39.right(tree39n4)
+    tree39.pretraversal()
+    #tree39.swap(tree39n2,tree39n3)
+    #tree39.swap(tree39n1,tree39n3)
+    #tree39.swap(tree39n1,tree39n9)
+    tree39.pretraversal()
+    print ''
