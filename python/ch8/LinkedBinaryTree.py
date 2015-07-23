@@ -126,6 +126,14 @@ class LinkedBinaryTree(BinaryTree):
         """Delete the subtrees of node p"""
         return self._delete_subtree(p)
 
+    def attach(self,p,t1,t2):
+        """Attach trees t1 and t2, respectively, as the left and right subtrees of the external Position p.
+
+        As a side effect, set t1 and t2 to empty.
+        Raise TypeError if trees t1 and t2 do not match type of this tree.
+        Raise ValueError if Position p is invalid or not external.
+        """
+        return self._attach(p,t1,t2)
     #-------------------------- override accessors methods -----------------
     def positions(self):
         """Generate an iteration of the tree's positions."""
@@ -148,21 +156,21 @@ class LinkedBinaryTree(BinaryTree):
 
     def pretraversal(self):
         """Show the infomation of the current tree in preorder traversal"""
-        print 'BinaryTree traversal in preorder :[',
+        print 'Preorder traversal :[',
         for i in self.preorder():
             print i.element(),
         print ']'
 
     def intraversal(self):
         """Show the infomation of the current tree in inorder traversal"""
-        print 'BinaryTree traversal in inorder  :[',
+        print 'Inorder traversal  :[',
         for i in self.inorder():
             print i.element(),
         print ']'
 
     def posttraversal(self):
         """Show the infomation of the current tree in postorder traversal"""
-        print 'BinaryTree traversal in postorder:[',
+        print 'Postorder traversal:[',
         for i in self.postorder():
             print i.element(),
         print ']'
@@ -221,46 +229,59 @@ class LinkedBinaryTree(BinaryTree):
 
     def _swap(self,p,q):
         """Swap the node p and q"""
-        nodep = self._validate(p)
-        nodeq = self._validate(q)
-        parent_p = self._validate(self.parent(p))
-        left_p = self._validate(self.left(p))
-        right_p = self._validate(self.right(p))
-        parent_q = self._validate(self.parent(q))
-        left_q = self._validate(self.left(q))
-        right_q = self._validate(self.right(q))
+        #nodep = self._validate(p)
+        #nodeq = self._validate(q)
+        #parent_p = self._validate(self.parent(p))
+        #left_p = self._validate(self.left(p))
+        #right_p = self._validate(self.right(p))
+        #parent_q = self._validate(self.parent(q))
+        #left_q = self._validate(self.left(q))
+        #right_q = self._validate(self.right(q))
 
-        p._parent = parent_q
-        q._parent = parent_p
-        p._left = left_q
-        p._right = right_q
-        q._left = left_p
-        q._right = right_p
+        #if p._parent == nodeq:
+            #if parent_q:
+                #if nodeq == parent_q._left:
+                    #parent_q._left = nodep
+                #else:
+                    #parent_q._right = nodep
+                #nodep._parent = parent_q
 
-        if parent_p:
-            if nodep == parent_p._left:
-                parent_p._left = nodeq
-            else:
-                parent_p._right = nodeq
+            #if nodep == nodeq._left:
+                #nodep._left = nodeq
+            #else:
+                #nodep._right = nodeq
 
-        if parent_q:
-            if nodeq == parent_q._left:
-                parent_q._left = nodep
-            else:
-                parent_q._right = nodep
+        #p._parent = parent_q
+        #q._parent = parent_p
+        #p._left = left_q
+        #p._right = right_q
+        #q._left = left_p
+        #q._right = right_p
 
-        if left_p:
-            left_p._parent = nodeq
+        #if parent_p:
+            #if nodep == parent_p._left:
+                #parent_p._left = nodeq
+            #else:
+                #parent_p._right = nodeq
 
-        if right_p:
-            right_p._parent = nodeq
+        #if parent_q:
+            #if nodeq == parent_q._left:
+                #parent_q._left = nodep
+            #else:
+                #parent_q._right = nodep
 
-        if left_q:
-            left_q._parent = nodep
+        #if left_p:
+            #left_p._parent = nodeq
 
-        if right_q:
-            right_q._parent = nodep
-        #pass
+        #if right_p:
+            #right_p._parent = nodeq
+
+        #if left_q:
+            #left_q._parent = nodep
+
+        #if right_q:
+            #right_q._parent = nodep
+        pass
 
     def _delete(self, p):
         """Delete the node at Position p, and replace it with its child, if any.
@@ -395,6 +416,46 @@ def numEN(T,p):
     else:
         return (numEN(T,T.left(p)) if T.left(p) else 0) + (numEN(T,T.right(p)) if T.right(p) else 0)
 
+def clonetree(T,p):
+    """Clone a proper tree and return the new tree"""
+    if T.is_leaf(p):
+        tree = LinkedBinaryTree()
+        tree.add_root(p.element())
+        return tree
+    else:
+        tree = LinkedBinaryTree()
+        r0 = tree.add_root(p.element())
+        tree.attach(r0,clonetree(T,T.left(p)),clonetree(T,T.right(p)))
+        return tree
+
+def clonetree2(T,p):
+    if T.is_leaf(p):
+        tree = LinkedBinaryTree()
+        tree.add_root(p.element())
+        return tree
+    else:
+        tree = LinkedBinaryTree()
+        r0 = tree.add_root(p.element())
+        if T.left(p) is not None:          # if left child exists, traverse its subtree
+            tree.add_left(r0,clonetree2(T,T.left(p)).root().element())
+        if T.right(p) is not None:         # if right child exists, traverse its subtree
+            tree.add_right(r0,clonetree2(T,T.right(p)).root().element())
+        return tree
+
+def convert_to_proper(impropertree,set_element):
+    """Convert an improper tree into proper
+       The old order will not change,new element will be set into 'set_element'
+    """
+    singlecount = 0
+    for i in impropertree.inorder():
+        if impropertree.left(i) == None and impropertree.right(i) != None:
+            impropertree.add_left(i,set_element)
+            singlecount += 1
+        elif impropertree.right(i) == None and impropertree.left(i) != None:
+            impropertree.add_right(i,set_element)
+            singlecount += 1
+    return singlecount
+
 #------------Test code-------------------------------------------------------------------------
 if __name__ == '__main__':
     #-------------------------- Init a tree for further use --------------------
@@ -413,7 +474,9 @@ if __name__ == '__main__':
     r11 = T.add_right(r6,11)
     r12 = T.add_left(r8,12)
     r13 = T.add_left(r10,13)
-    r14 = T.add_right(r11,14)
+    r14 = T.add_right(r10,14)
+    r15 = T.add_left(r11,15)
+    r16 = T.add_right(r11,16)
     print ''
 
     #-------------------------- Test code for 3 different way of traversal --------------------
@@ -463,16 +526,14 @@ if __name__ == '__main__':
     #-----------R-8.6----------------------------------------------------------------
     print "Test for R-8.6................................"
     tree6 = copy.deepcopy(T)
+    print 'Improper tree:'
+    tree6.pretraversal()
+    print ''
 
-    singlecount = 0
-    for i in tree6.inorder():
-        if tree6.left(i) == None and tree6.right(i) != None:
-            tree6.add_left(i,'Orz')
-            singlecount += 1
-        elif tree6.right(i) == None and tree6.left(i) != None:
-            tree6.add_right(i,'Orz')
-            singlecount += 1
-    print 'use proper tree represent improper tree: add addtional',singlecount,'nodes'
+    print 'proper tree represent improper tree: add addtional',convert_to_proper(tree6,'Orz'),'nodes'
+    print ''
+
+    print 'Proper tree:'
     tree6.pretraversal()
     print ''
 
@@ -604,17 +665,45 @@ if __name__ == '__main__':
     print ''
 
     #-----------C-8.39----------------------------------------------------------------
-    print "Test for C-8.39................................"
-    tree39 = copy.deepcopy(T)
-    tree39n0 = tree39.root()
-    tree39n1 = tree39.left(tree39n0)
-    tree39n2 = tree39.right(tree39n0)
-    tree39n3 = tree39.left(tree39n1)
-    tree39n4 = tree39.right(tree39n1)
-    tree39n9 = tree39.right(tree39n4)
-    tree39.pretraversal()
-    #tree39.swap(tree39n2,tree39n3)
-    #tree39.swap(tree39n1,tree39n3)
-    #tree39.swap(tree39n1,tree39n9)
-    tree39.pretraversal()
-    print ''
+    #print "Test for C-8.39................................"
+    #tree39 = copy.deepcopy(T)
+    #tree39n0 = tree39.root()
+    #tree39n1 = tree39.left(tree39n0)
+    #tree39n2 = tree39.right(tree39n0)
+    #tree39n3 = tree39.left(tree39n1)
+    #tree39n4 = tree39.right(tree39n1)
+    #tree39n9 = tree39.right(tree39n4)
+    #tree39.pretraversal()
+    ##tree39.swap(tree39n2,tree39n3)
+    ##tree39.swap(tree39n1,tree39n3)
+    ##tree39.swap(tree39n1,tree39n9)
+    #tree39.pretraversal()
+    #print ''
+
+    #-----------C-8.41----------------------------------------------------------------
+    print "Test for C-8.41................................"
+    # clonetree can only handle proper tree,so any improper tree will cause an error
+    tree41a = copy.deepcopy(T)
+    convert_to_proper(tree41a,'Orz')
+    print 'Old tree going to clone'
+    tree41a.pretraversal()
+    t41a0 = tree41a.root()
+    tree41b = clonetree(tree41a,t41a0)
+    print 'New tree'
+    tree41b.pretraversal()
+    print len(tree41b)
+    # you can even clone a subtree as long as it is proper!
+    T.pretraversal()
+    tree41c = clonetree(T,r6)
+    print 'Clone the subtree of T from node r6:'
+    tree41c.pretraversal()
+    print len(tree41c)
+
+    #-----------C-8.42----------------------------------------------------------------
+    print "Test for C-8.42................................"
+    tree42a = copy.deepcopy(T)
+    tree42a.pretraversal()
+    #convert_to_proper(tree42a,'Orz')
+    t42a0 = tree42a.root()
+    tree42b = clonetree2(tree42a,t42a0)
+    tree42b.pretraversal()
