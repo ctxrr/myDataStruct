@@ -134,6 +134,13 @@ class LinkedBinaryTree(BinaryTree):
         Raise ValueError if Position p is invalid or not external.
         """
         return self._attach(p,t1,t2)
+
+    def is_balance(self,p):
+        return -2 < self.balance_factor(p) < 2
+
+    def balance_factor(self,p):
+        """Return the balance factor of posion p"""
+        return self.height(self.left(p)) - self.height(self.right(p))
     #-------------------------- override accessors methods -----------------
     def positions(self):
         """Generate an iteration of the tree's positions."""
@@ -428,19 +435,16 @@ def clonetree(T,p):
         tree.attach(r0,clonetree(T,T.left(p)),clonetree(T,T.right(p)))
         return tree
 
-def clonetree2(T,p):
-    if T.is_leaf(p):
-        tree = LinkedBinaryTree()
-        tree.add_root(p.element())
-        return tree
-    else:
-        tree = LinkedBinaryTree()
-        r0 = tree.add_root(p.element())
-        if T.left(p) is not None:          # if left child exists, traverse its subtree
-            tree.add_left(r0,clonetree2(T,T.left(p)).root().element())
-        if T.right(p) is not None:         # if right child exists, traverse its subtree
-            tree.add_right(r0,clonetree2(T,T.right(p)).root().element())
-        return tree
+def clonetree2(T,p,T0,p0):
+    """Clone a binary tree(not necessarily proper)"""
+    if T.is_root(p):
+        p0 = T0.add_root(p.element())
+    if T.left(p) is not None:
+        T0.add_left(p0,T.left(p).element())
+        clonetree2(T,T.left(p),T0,T0.left(p0))
+    if T.right(p) is not None:
+        T0.add_right(p0,T.right(p).element())
+        clonetree2(T,T.right(p),T0,T0.right(p0))
 
 def convert_to_proper(impropertree,set_element):
     """Convert an improper tree into proper
@@ -455,6 +459,43 @@ def convert_to_proper(impropertree,set_element):
             impropertree.add_right(i,set_element)
             singlecount += 1
     return singlecount
+
+def element_height(T,p):
+    """print the element at position p and the height of p"""
+    if T.is_leaf(p):
+        print (p.element(),0),
+        return 0
+    else:
+        height= 1+max(element_height(T,i) for i in T.children(p))
+        print (p.element(),height),
+        return height
+
+def element_depth(T,p,depth=0):
+    """print the element at position p and the depth of p"""
+    print (p.element(),depth),
+    if not T.is_leaf(p):
+        for i in T.children(p):
+            element_depth(T,i,depth+1)
+
+def path_length(T,p,depth=0,result=0):
+    """Caculate the path length of a binarytree"""
+    result += depth
+    #for debug
+    #print (p.element(),depth,result),
+    if T.left(p):
+        result=path_length(T,T.left(p),depth+1,result)
+    if T.right(p):
+        result = path_length(T,T.right(p),depth+1,result)
+
+    return result
+
+def reflection_tree(p):
+    if p == None:
+        return p
+    temp = reflection_tree(p._left)
+    p._left = reflection_tree(p._right)
+    p._right = temp
+    return p
 
 #------------Test code-------------------------------------------------------------------------
 if __name__ == '__main__':
@@ -685,25 +726,88 @@ if __name__ == '__main__':
     # clonetree can only handle proper tree,so any improper tree will cause an error
     tree41a = copy.deepcopy(T)
     convert_to_proper(tree41a,'Orz')
-    print 'Old tree going to clone'
+    print 'Old tree'
     tree41a.pretraversal()
     t41a0 = tree41a.root()
     tree41b = clonetree(tree41a,t41a0)
-    print 'New tree'
+    print ''
+
+    print 'Use attach to clone new tree'
     tree41b.pretraversal()
-    print len(tree41b)
+    print 'len:',len(tree41b)
     # you can even clone a subtree as long as it is proper!
     T.pretraversal()
     tree41c = clonetree(T,r6)
+    print ''
+
     print 'Clone the subtree of T from node r6:'
     tree41c.pretraversal()
-    print len(tree41c)
+    print 'len:',len(tree41c)
+    print ''
 
     #-----------C-8.42----------------------------------------------------------------
     print "Test for C-8.42................................"
     tree42a = copy.deepcopy(T)
+    print 'Old tree'
     tree42a.pretraversal()
-    #convert_to_proper(tree42a,'Orz')
+    print ''
+
+    print 'Use add_left & add_right to clone new tree'
     t42a0 = tree42a.root()
-    tree42b = clonetree2(tree42a,t42a0)
+    tree42b = LinkedBinaryTree()
+    clonetree2(tree42a,t42a0,tree42b,None)
     tree42b.pretraversal()
+    print 'len:',len(tree42b)
+    print ''
+
+    #-----------C-8.44----------------------------------------------------------------
+    print "Test for C-8.44................................"
+    tree44 = copy.deepcopy(T)
+    tree44.pretraversal()
+    t44n0 = tree44.root()
+    t44n1 = tree44.left(t44n0)
+    t44n2 = tree44.right(t44n0)
+    element_height(tree44,t44n1)
+    print ''
+    element_height(tree44,t44n2)
+    print ''
+    print ''
+
+    #-----------C-8.45----------------------------------------------------------------
+    print "Test for C-8.45................................"
+    tree45 = copy.deepcopy(T)
+    t45n0 = tree45.root()
+    element_depth(tree45,t45n0)
+    print ''
+    print ''
+
+    #-----------C-8.46----------------------------------------------------------------
+    print "Test for C-8.46................................"
+    tree46 = copy.deepcopy(T)
+    t46n0 = tree46.root()
+    print 'Use path_length:',path_length(tree46,t46n0)
+    print 'Use the sum of external and internal path length:',sumEPL(tree46,t46n0,0),sumIPL(tree46,t46n0,0)
+    print ''
+
+    #-----------C-8.47----------------------------------------------------------------
+    print "Test for C-8.47................................"
+    tree47a = copy.deepcopy(T)
+    t47a0 = tree47a.root()
+    print tree47a.balance_factor(t47a0)
+    print 'is balance:',tree47a.is_balance(t47a0)
+
+    tree47b = copy.deepcopy(tree20)
+    t47b0 = tree47b.root()
+    print tree47b.balance_factor(t47b0)
+    print 'is balance',tree47b.is_balance(t47b0)
+    print ''
+
+    #-----------C-8.48----------------------------------------------------------------
+    print "Test for C-8.48................................"
+    tree48 = copy.deepcopy(T)
+    tree48.pretraversal()
+    node48 = tree48._validate(tree48.root())
+    reflection_tree(node48)
+    tree48.posttraversal()
+    print ''
+
