@@ -141,6 +141,7 @@ class LinkedBinaryTree(BinaryTree):
     def balance_factor(self,p):
         """Return the balance factor of posion p"""
         return self.height(self.left(p)) - self.height(self.right(p))
+
     #-------------------------- override accessors methods -----------------
     def positions(self):
         """Generate an iteration of the tree's positions."""
@@ -483,7 +484,7 @@ def path_length(T,p,depth=0,result=0):
     #for debug
     #print (p.element(),depth,result),
     if T.left(p):
-        result=path_length(T,T.left(p),depth+1,result)
+        result = path_length(T,T.left(p),depth+1,result)
     if T.right(p):
         result = path_length(T,T.right(p),depth+1,result)
 
@@ -810,4 +811,113 @@ if __name__ == '__main__':
     reflection_tree(node48)
     tree48.posttraversal()
     print ''
+
+    #-----------C-8.50----------------------------------------------------------------
+    print "Test for C-8.50................................"
+    #T.pretraversal()
+    #T.intraversal()
+    #T.posttraversal()
+    def slow_foo(T,p):
+        lock = True
+        for i in T.inorder():
+            if lock:
+                if i == p:
+                    lock = False
+            else:
+                print i.element()
+                return
+    slow_foo(T,r15)
+
+    def preorder_next(T,p):
+        pass
+        #print 'haha',p.element()
+
+        #if T.left(p) is not None:          # if left child exists, traverse its subtree
+            #for other in T._subtree_preorder(T.left(p)):
+                #return other
+        #elif T.right(p) is not None:         # if right child exists, traverse its subtree
+            #for other in T._subtree_preorder(T.right(p)):
+                #return other
+        #if not leaf:
+            #for i in T._subtree_postorder(p):
+                #return i
+        #else:
+            #print 'hehe'
+            #if p == T.left(T.parent(p)):
+                #return T.sibling(p)
+            #else:
+                #pass
+                            ##return other
+            #return preorder_next(T,T.right(T.parent(p)),True)
+        #else:
+            ##for other in T._subtree_preorder
+        #    return preorder_next(T,T.left(T.parent(T.parent(p))))
+    #print preorder_next(T,r13).element()
+
+    #-----------C-8.51----------------------------------------------------------------
+    print "Test for C-8.51................................"
+    # define a subclass of LinkedBinaryTree
+    class IterTraversal(LinkedBinaryTree):
+        # --------------------- define nested iteration class ---------------------
+        class Iterclass():
+            def __init__(self,n):
+                self.node = n
+                self.generator = None
+
+            def __iter__(self):
+                self.generator = self.iter_preorder(self.node)
+                return self
+
+            def next(self):
+                return self.generator.next()
+
+            def iter_preorder(self,n):
+                yield n                               # visit p between its subtrees
+                if n._left is not None:          # if left child exists, traverse its subtree
+                    for other in self.iter_preorder(n._left):
+                        yield other
+                if n._right is not None:         # if right child exists, traverse its subtree
+                    for other in self.iter_preorder(n._right):
+                        yield other
+
+        # --------------------- override preorder methods ---------------------
+        def preorder(self):
+            if not self.is_empty():
+                return self.Iterclass(self.root()._node)
+
+    # test code
+    tree51 = IterTraversal()
+    t51n0 = tree51.add_root('A')
+    t51n1 = tree51.add_right(t51n0,'B')
+    t51n2 = tree51.add_right(t51n1,'C')
+    t51n3 = tree51.add_right(t51n2,'D')
+    t51n4 = tree51.add_right(t51n3,'E')
+    for i in tree51.preorder():
+        print i._element,
+    print ''
+
+    #-----------C-8.56----------------------------------------------------------------
+    print "Test for C-8.56................................"
+    t2 = LinkedBinaryTree()
+    t2n0 = t2.add_root('Paper')
+    t2n1 = t2.add_left(t2n0,'Title')
+    t2n2 = t2.add_right(t2n0,'Abstract')
+    t2n3 = t2.add_left(t2n2,'1.1')
+    t2n4 = t2.add_right(t2n2,'1.2')
+    parenthesize(t2,t2n0)
+    print ''
+    print ''
+
+    def parenthesize(T, p):
+        """Print parenthesized representation of subtree of T rooted at p."""
+        print p.element(), # use of end avoids trailing newline
+        if not T.is_leaf(p):
+            first_time = True
+            for c in T.children(p):
+                sep ='(' if first_time else ',' # determine proper separator
+                print sep,
+                first_time = False # any future passes will not be the first
+                parenthesize(T, c) # recur on child
+            print ')', # include closing parenthesis
+
 
