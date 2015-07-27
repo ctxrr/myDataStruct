@@ -898,26 +898,31 @@ if __name__ == '__main__':
 
     #-----------C-8.56----------------------------------------------------------------
     print "Test for C-8.56................................"
-    t2 = LinkedBinaryTree()
-    t2n0 = t2.add_root('Paper')
-    t2n1 = t2.add_left(t2n0,'Title')
-    t2n2 = t2.add_right(t2n0,'Abstract')
-    t2n3 = t2.add_left(t2n2,'1.1')
-    t2n4 = t2.add_right(t2n2,'1.2')
-    parenthesize(t2,t2n0)
-    print ''
-    print ''
-
-    def parenthesize(T, p):
+    def indentedparenthetic(T,p,size):
         """Print parenthesized representation of subtree of T rooted at p."""
-        print p.element(), # use of end avoids trailing newline
+        print 2*size*' '+str(p.element()),
         if not T.is_leaf(p):
             first_time = True
             for c in T.children(p):
-                sep ='(' if first_time else ',' # determine proper separator
-                print sep,
-                first_time = False # any future passes will not be the first
-                parenthesize(T, c) # recur on child
-            print ')', # include closing parenthesis
+                if first_time:
+                    print '('
+                else:
+                    print ''
+                first_time = False
+                indentedparenthetic(T,c,size+1) # recur on child
+            print ''
+            print 2*size*' '+')',
+
+    t56 = LinkedBinaryTree()
+    t56n0 = t56.add_root('Paper')
+    t56n1 = t56.add_left(t56n0,'Title')
+    t56n2 = t56.add_right(t56n0,'Abstract')
+    t56n3 = t56.add_left(t56n1,'1.1')
+    t56n4 = t56.add_right(t56n1,'1.2')
+    t56n5 = t56.add_left(t56n2,'2.1')
+    t56n6 = t56.add_right(t56n2,'2.2')
+    indentedparenthetic(t56,t56n0,0)
+    print ''
+    print ''
 
 
