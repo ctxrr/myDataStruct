@@ -925,4 +925,38 @@ if __name__ == '__main__':
     print ''
     print ''
 
+    #-----------C-8.57----------------------------------------------------------------
+    print "Test for C-8.57................................"
+    t57a = copy.deepcopy(T)
+    t57a1 = t57a.root()
+    t57a.pretraversal()
 
+    # definition of roman_traversal function
+    def roman_traversal(T,p,roman_factor):
+        """a.Desception:print out all the roman position in Tree T rooted at position p
+           b.Return:roman_traversal returns a tuple which has 3 member:
+                1.num_node is the descendant's number of p
+                2.result is whether p is roman or not
+                3.ret is whether p is the position that I want,which means p itself is not roman
+                but all its descendants are roman
+           c.Parameter:
+                roman_factor is the factor that user should give in user-code
+        """
+        if T.num_children(p)==0:
+            # for debug
+            #print p.element(),True,False
+            return (1,True,False)
+        else:
+            left_result  = roman_traversal(T,T.left(p),roman_factor) if T.left(p) else (0,True,True)
+            right_result = roman_traversal(T,T.right(p),roman_factor) if T.right(p) else(0,True,True)
+            num_node = left_result[0] + right_result[0] + 1
+            result = (-1*roman_factor-1) < (left_result[0] - right_result[0]) < roman_factor+1
+            ret = (not left_result[2]) and (not right_result[2]) and (not result)
+            # for debug
+            #print p.element(),result,ret
+            if ret:
+                print p.element()
+            return (num_node,result,ret)
+
+    # test code
+    roman_traversal(t57a,t57a1,1)
