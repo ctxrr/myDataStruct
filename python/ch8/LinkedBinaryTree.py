@@ -905,4 +905,25 @@ if __name__ == '__main__':
     print findLCA(T,r5,r13).element()
     print ''
 
+    #-----------C-8.59----------------------------------------------------------------
+    print "Test for C-8.59................................"
+    def distance(T,p,q):
+        """Find the lowest common ancestor of p and q
+            Suppose the depth of p and q is dp and dq.
+            the running time of findLCA is O(dp*dq) which is much smaller than O(n2)
+        """
+        lca = findLCA(T,p,q)
+        return T.depth(p)+T.depth(q)-2*T.depth(lca)
+    print distance(T,r12,r13)
+    """
+    def diameter(T,p):
+        #if T.is_root == None or p == None:
+        if p == None:
+            return 0
+        rootDiameter  = T.height(T.left(p)) + T.height(T.right(p)) + 1
+        leftDiameter  = diameter(T,T.left(p))
+        rightDiameter = diameter(T,T.right(p))
 
+        return max(rootDiameter,leftDiameter,rightDiameter)
+    print diameter(T,r0)
+    """
