@@ -517,6 +517,24 @@ def findLCA(T,p,q):
                 walk_q = T.parent(walk_q)
         walk_p = T.parent(walk_p)
 
+def distance(T,p,q):
+    """Caculate the distance between p and q"""
+    lca = findLCA(T,p,q)
+    return T.depth(p)+T.depth(q)-2*T.depth(lca)
+
+def diameter(T,p):
+    """Caculate the diameter of a tree.
+       The diameter of a tree (sometimes called the width) is the number of nodes on the longest path between two leaves in the tree.
+       Run in O(n^2), not efficient!
+    """
+    if p == None:
+        return 0
+    rootDiameter  = T.height(T.left(p)) + T.height(T.right(p)) + 1
+    leftDiameter  = diameter(T,T.left(p))
+    rightDiameter = diameter(T,T.right(p))
+
+    return max(rootDiameter,leftDiameter,rightDiameter)
+
 #------------Test code-------------------------------------------------------------------------
 if __name__ == '__main__':
     #-------------------------- Init a tree for further use --------------------
@@ -907,23 +925,6 @@ if __name__ == '__main__':
 
     #-----------C-8.59----------------------------------------------------------------
     print "Test for C-8.59................................"
-    def distance(T,p,q):
-        """Find the lowest common ancestor of p and q
-            Suppose the depth of p and q is dp and dq.
-            the running time of findLCA is O(dp*dq) which is much smaller than O(n2)
-        """
-        lca = findLCA(T,p,q)
-        return T.depth(p)+T.depth(q)-2*T.depth(lca)
-    print distance(T,r12,r13)
-    """
-    def diameter(T,p):
-        #if T.is_root == None or p == None:
-        if p == None:
-            return 0
-        rootDiameter  = T.height(T.left(p)) + T.height(T.right(p)) + 1
-        leftDiameter  = diameter(T,T.left(p))
-        rightDiameter = diameter(T,T.right(p))
+    print 'Distance:',distance(T,r12,r13)
+    print 'Diameter:',diameter(T,r0)
 
-        return max(rootDiameter,leftDiameter,rightDiameter)
-    print diameter(T,r0)
-    """
