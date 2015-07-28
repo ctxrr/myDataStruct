@@ -237,58 +237,7 @@ class LinkedBinaryTree(BinaryTree):
 
     def _swap(self,p,q):
         """Swap the node p and q"""
-        #nodep = self._validate(p)
-        #nodeq = self._validate(q)
-        #parent_p = self._validate(self.parent(p))
-        #left_p = self._validate(self.left(p))
-        #right_p = self._validate(self.right(p))
-        #parent_q = self._validate(self.parent(q))
-        #left_q = self._validate(self.left(q))
-        #right_q = self._validate(self.right(q))
-
-        #if p._parent == nodeq:
-            #if parent_q:
-                #if nodeq == parent_q._left:
-                    #parent_q._left = nodep
-                #else:
-                    #parent_q._right = nodep
-                #nodep._parent = parent_q
-
-            #if nodep == nodeq._left:
-                #nodep._left = nodeq
-            #else:
-                #nodep._right = nodeq
-
-        #p._parent = parent_q
-        #q._parent = parent_p
-        #p._left = left_q
-        #p._right = right_q
-        #q._left = left_p
-        #q._right = right_p
-
-        #if parent_p:
-            #if nodep == parent_p._left:
-                #parent_p._left = nodeq
-            #else:
-                #parent_p._right = nodeq
-
-        #if parent_q:
-            #if nodeq == parent_q._left:
-                #parent_q._left = nodep
-            #else:
-                #parent_q._right = nodep
-
-        #if left_p:
-            #left_p._parent = nodeq
-
-        #if right_p:
-            #right_p._parent = nodeq
-
-        #if left_q:
-            #left_q._parent = nodep
-
-        #if right_q:
-            #right_q._parent = nodep
+        # TBC
         pass
 
     def _delete(self, p):
@@ -381,6 +330,21 @@ def parenthesize(T, p):
             first_time = False # any future passes will not be the first
             parenthesize(T, c) # recur on child
         print ')', # include closing parenthesis
+
+def indentedparenthetic(T,p,size):
+    """Print parenthesized representation of subtree of T rooted at p."""
+    print 2*size*' '+str(p.element()),
+    if not T.is_leaf(p):
+        first_time = True
+        for c in T.children(p):
+            if first_time:
+                print '('
+            else:
+                print ''
+            first_time = False
+            indentedparenthetic(T,c,size+1) # recur on child
+        print ''
+        print 2*size*' '+')',
 
 def arithmetic_expression(T,p):
     """Caculate the result of an arithmetic expression implemented by a BinaryTree"""
@@ -497,6 +461,61 @@ def reflection_tree(p):
     p._left = reflection_tree(p._right)
     p._right = temp
     return p
+
+def isomorphic_tree(T1,T2,p1,p2):
+    """Test whether T1 and T2 are isomorphic"""
+    if T1.is_leaf(p1) and T2.is_leaf(p2):
+        return True
+    elif T1.num_children(p1) != T2.num_children(p2):
+        return False
+    else:
+        m = T2.children(p2)
+        for i in T1.children(p1):
+            j=m.next()
+            if not isomorphic_tree(T1,T2,i,j):
+                return False
+        return True
+
+def roman_traversal(T,p,roman_factor):
+    """a.Desception:print out all the roman position in Tree T rooted at position p
+        b.Return:roman_traversal returns a tuple which has 3 member:
+            1.num_node is the descendant's number of p
+            2.result is whether p is roman or not
+            3.ret is whether p is the position that I want,which means p itself is not roman
+            but all its descendants are roman
+        c.Parameter:
+            roman_factor is the factor that user should give in user-code
+    """
+    if T.num_children(p)==0:
+        # for debug
+        #print p.element(),True,False
+        return (1,True,False)
+    else:
+        left_result  = roman_traversal(T,T.left(p),roman_factor) if T.left(p) else (0,True,True)
+        right_result = roman_traversal(T,T.right(p),roman_factor) if T.right(p) else(0,True,True)
+        num_node = left_result[0] + right_result[0] + 1
+        result = (-1*roman_factor-1) < (left_result[0] - right_result[0]) < roman_factor+1
+        ret = (not left_result[2]) and (not right_result[2]) and (not result)
+        # for debug
+        #print p.element(),result,ret
+        if ret:
+            print p.element()
+        return (num_node,result,ret)
+
+def findLCA(T,p,q):
+    """Find the lowest common ancestor of p and q
+        Suppose the depth of p and q is dp and dq.
+        the running time of findLCA is O(dp*dq) which is much smaller than O(n2)
+    """
+    walk_p = p
+    while walk_p:
+        walk_q = q #set walk_q into initial state
+        while walk_q:
+            if walk_p == walk_q:
+                return walk_p
+            else:
+                walk_q = T.parent(walk_q)
+        walk_p = T.parent(walk_p)
 
 #------------Test code-------------------------------------------------------------------------
 if __name__ == '__main__':
@@ -648,21 +667,6 @@ if __name__ == '__main__':
     print ''
     #-----------C-8.35----------------------------------------------------------------
     print "Test for C-8.35................................"
-
-    # definition of isomorphic_tree function
-    def isomorphic_tree(T1,T2,p1,p2):
-        if T1.is_leaf(p1) and T2.is_leaf(p2):
-            return True
-        elif T1.num_children(p1) != T2.num_children(p2):
-            return False
-        else:
-            m = T2.children(p2)
-            for i in T1.children(p1):
-                j=m.next()
-                if not isomorphic_tree(T1,T2,i,j):
-                    return False
-            return True
-
     # init two isomorphic binarytree for test
     tree35a = LinkedBinaryTree()
     t35a0 = tree35a.add_root(1)
@@ -830,29 +834,7 @@ if __name__ == '__main__':
 
     def preorder_next(T,p):
         pass
-        #print 'haha',p.element()
-
-        #if T.left(p) is not None:          # if left child exists, traverse its subtree
-            #for other in T._subtree_preorder(T.left(p)):
-                #return other
-        #elif T.right(p) is not None:         # if right child exists, traverse its subtree
-            #for other in T._subtree_preorder(T.right(p)):
-                #return other
-        #if not leaf:
-            #for i in T._subtree_postorder(p):
-                #return i
-        #else:
-            #print 'hehe'
-            #if p == T.left(T.parent(p)):
-                #return T.sibling(p)
-            #else:
-                #pass
-                            ##return other
-            #return preorder_next(T,T.right(T.parent(p)),True)
-        #else:
-            ##for other in T._subtree_preorder
-        #    return preorder_next(T,T.left(T.parent(T.parent(p))))
-    #print preorder_next(T,r13).element()
+    print ''
 
     #-----------C-8.51----------------------------------------------------------------
     print "Test for C-8.51................................"
@@ -895,24 +877,10 @@ if __name__ == '__main__':
     for i in tree51.preorder():
         print i._element,
     print ''
+    print ''
 
     #-----------C-8.56----------------------------------------------------------------
     print "Test for C-8.56................................"
-    def indentedparenthetic(T,p,size):
-        """Print parenthesized representation of subtree of T rooted at p."""
-        print 2*size*' '+str(p.element()),
-        if not T.is_leaf(p):
-            first_time = True
-            for c in T.children(p):
-                if first_time:
-                    print '('
-                else:
-                    print ''
-                first_time = False
-                indentedparenthetic(T,c,size+1) # recur on child
-            print ''
-            print 2*size*' '+')',
-
     t56 = LinkedBinaryTree()
     t56n0 = t56.add_root('Paper')
     t56n1 = t56.add_left(t56n0,'Title')
@@ -927,36 +895,14 @@ if __name__ == '__main__':
 
     #-----------C-8.57----------------------------------------------------------------
     print "Test for C-8.57................................"
-    t57a = copy.deepcopy(T)
-    t57a1 = t57a.root()
-    t57a.pretraversal()
+    t57 = copy.deepcopy(T)
+    t57n1 = t57.root()
+    roman_traversal(t57,t57n1,1)
+    print ''
 
-    # definition of roman_traversal function
-    def roman_traversal(T,p,roman_factor):
-        """a.Desception:print out all the roman position in Tree T rooted at position p
-           b.Return:roman_traversal returns a tuple which has 3 member:
-                1.num_node is the descendant's number of p
-                2.result is whether p is roman or not
-                3.ret is whether p is the position that I want,which means p itself is not roman
-                but all its descendants are roman
-           c.Parameter:
-                roman_factor is the factor that user should give in user-code
-        """
-        if T.num_children(p)==0:
-            # for debug
-            #print p.element(),True,False
-            return (1,True,False)
-        else:
-            left_result  = roman_traversal(T,T.left(p),roman_factor) if T.left(p) else (0,True,True)
-            right_result = roman_traversal(T,T.right(p),roman_factor) if T.right(p) else(0,True,True)
-            num_node = left_result[0] + right_result[0] + 1
-            result = (-1*roman_factor-1) < (left_result[0] - right_result[0]) < roman_factor+1
-            ret = (not left_result[2]) and (not right_result[2]) and (not result)
-            # for debug
-            #print p.element(),result,ret
-            if ret:
-                print p.element()
-            return (num_node,result,ret)
+    #-----------C-8.58----------------------------------------------------------------
+    print "Test for C-8.58................................"
+    print findLCA(T,r5,r13).element()
+    print ''
 
-    # test code
-    roman_traversal(t57a,t57a1,1)
+
