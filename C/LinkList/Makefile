@@ -1,2 +1,4 @@
 all:
-	gcc List.c myList.c -o myList
+	gcc LinkedList.c myList.c -o myList
+clean:
+	rm myList

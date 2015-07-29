@@ -1,4 +1,4 @@
-#include "List.h"
+#include "inc/LinkedList.h"
 #include<stdlib.h>
 #include<stdio.h>
 
@@ -43,12 +43,14 @@ int GetSize(List *L)
 
 void ShowInfo(List *L)
 {
-    Node *walk = L->header;
+    printf("info:[");
+    Node *walk = L->header->Next;
     while (walk != L->trailer)
     {
-        printf("%d\n",walk->Element);
+        printf("%d ",walk->Element);
         walk = walk->Next;
     }
+    printf("]\n");
 }
 // int IsLast(Position P,List L)
 // {

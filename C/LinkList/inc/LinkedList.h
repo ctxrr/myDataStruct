@@ -1,6 +1,5 @@
 #ifndef _List_H
 #define _List_H
-#include "myList.h"
 
 typedef int ElementType;
 
