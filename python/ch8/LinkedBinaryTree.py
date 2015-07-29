@@ -539,7 +539,8 @@ def distance(T,p,q):
 
 def diameter(T,p):
     """Caculate the diameter of a tree.
-       The diameter of a tree (sometimes called the width) is the number of nodes on the longest path between two leaves in the tree.
+       The diameter of a tree (sometimes called the width) is the number
+           of nodes on the longest path between two leaves in the tree.
        Run in O(n^2), not efficient!
     """
     if p == None:
@@ -549,6 +550,28 @@ def diameter(T,p):
     rightDiameter = diameter(T,T.right(p))
 
     return max(rootDiameter,leftDiameter,rightDiameter)
+
+def diameterOpt(T,p):
+    """Caculate the diameter of a tree.
+       The diameter of a tree (sometimes called the width) is the number
+           of nodes on the longest path between two leaves in the tree.
+       Use a variable currentNode:to save the max node number from current
+           node to the bottom.currentNode is greater than T.height(p) at 1.
+           For example,the currentNode of any leaf is 1.
+       Run in O(n), efficient!
+    """
+    result = [0,0]
+    if p == None:
+        return result #return (0,0) if p is None
+    leftResult = diameterOpt(T,T.left(p));
+    rightResult = diameterOpt(T,T.right(p));
+    currentNode = max(leftResult[1], rightResult[1]) + 1;
+    rootDiameter = leftResult[1] + rightResult[1] + 1;
+    leftDiameter = leftResult[0];
+    rightDiameter = rightResult[0];
+    result[0] = max(rootDiameter,leftDiameter, rightDiameter)
+    result[1] = currentNode
+    return result
 
 #------------Test code-------------------------------------------------------------------------
 if __name__ == '__main__':
@@ -942,4 +965,5 @@ if __name__ == '__main__':
     print "Test for C-8.59................................"
     print 'Distance:',distance(T,r12,r13)
     print 'Diameter:',diameter(T,r0)
+    print 'Diameter:',diameterOpt(T,r0)[0]
 
