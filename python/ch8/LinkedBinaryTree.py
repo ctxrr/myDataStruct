@@ -362,31 +362,43 @@ def arithmetic_expression(T,p):
 
 def sumIPL(T,p,value):
     """Caculate the internal path length of T"""
-    if T.num_children(p)==0:
+    if not p:
         return 0
     else:
-        return (value + (sumIPL(T,T.left(p),value+1) if T.left(p) else 0) + (sumIPL(T,T.right(p),value+1) if T.right(p) else 0))
+        if T.num_children(p)==0:
+            return 0
+        else:
+            return value + sumIPL(T,T.left(p),value+1) + sumIPL(T,T.right(p),value+1)
 
 def sumEPL(T,p,value):
     """Caculate the external path length of T"""
-    if T.num_children(p)==0:
-        return value
+    if not p:
+        return 0
     else:
-        return (sumEPL(T,T.left(p),value+1) if T.left(p) else 0) + (sumEPL(T,T.right(p),value+1) if T.right(p) else 0)
+        if T.num_children(p)==0:
+            return value
+        else:
+            return sumEPL(T,T.left(p),value+1) + sumEPL(T,T.right(p),value+1)
 
 def numIN(T,p):
     """Caculate the internal node number of T"""
-    if T.num_children(p)==0:
+    if not p:
         return 0
     else:
-        return 1 + (numIN(T,T.left(p)) if T.left(p) else 0) + (numIN(T,T.right(p)) if T.right(p) else 0)
+        if T.num_children(p)==0:
+            return 0
+        else:
+            return 1 + numIN(T,T.left(p)) + numIN(T,T.right(p))
 
 def numEN(T,p):
     """Caculate the external node number of T"""
-    if T.num_children(p)==0:
-        return 1
+    if not p:
+        return 0
     else:
-        return (numEN(T,T.left(p)) if T.left(p) else 0) + (numEN(T,T.right(p)) if T.right(p) else 0)
+        if T.num_children(p)==0:
+            return 1
+        else:
+            return numEN(T,T.left(p)) + numEN(T,T.right(p))
 
 def clonetree(T,p):
     """Clone a proper tree and return the new tree"""
@@ -486,21 +498,24 @@ def roman_traversal(T,p,roman_factor):
         c.Parameter:
             roman_factor is the factor that user should give in user-code
     """
-    if T.num_children(p)==0:
-        # for debug
-        #print p.element(),True,False
-        return (1,True,False)
+    if not p:
+        return (0,True,True)
     else:
-        left_result  = roman_traversal(T,T.left(p),roman_factor) if T.left(p) else (0,True,True)
-        right_result = roman_traversal(T,T.right(p),roman_factor) if T.right(p) else(0,True,True)
-        num_node = left_result[0] + right_result[0] + 1
-        result = (-1*roman_factor-1) < (left_result[0] - right_result[0]) < roman_factor+1
-        ret = (not left_result[2]) and (not right_result[2]) and (not result)
-        # for debug
-        #print p.element(),result,ret
-        if ret:
-            print p.element()
-        return (num_node,result,ret)
+        if T.num_children(p)==0:
+            # for debug
+            #print p.element(),True,False
+            return (1,True,False)
+        else:
+            left_result  = roman_traversal(T,T.left(p),roman_factor)
+            right_result = roman_traversal(T,T.right(p),roman_factor)
+            num_node = left_result[0] + right_result[0] + 1
+            result = (-1*roman_factor-1) < (left_result[0] - right_result[0]) < roman_factor+1
+            ret = (not left_result[2]) and (not right_result[2]) and (not result)
+            # for debug
+            #print p.element(),result,ret
+            if ret:
+                print p.element()
+            return (num_node,result,ret)
 
 def findLCA(T,p,q):
     """Find the lowest common ancestor of p and q
