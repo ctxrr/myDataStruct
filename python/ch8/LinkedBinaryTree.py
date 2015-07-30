@@ -1,6 +1,7 @@
 
 #------------Import packet-----------------------------------------------------------------------
 from BinaryTree import BinaryTree
+from LinkedTree import isomorphic_tree,element_height,element_depth,path_length
 import copy
 
 #------------Class LinkedBinaryTree--------------------------------------------------------------
@@ -305,47 +306,6 @@ class LinkedBinaryTree(BinaryTree):
             t2._size = 0
 
 #------------Stand alone function--------------------------------------------------------------
-def preorder_indent(T, p, d):
-    print 2*d*' ' + str(p.element()) # use depth for indentation
-    for c in T.children(p):
-        preorder_indent(T, c, d+1)
-
-def preorder_label(T, p, d, path):
-    label ='.'.join(str(j) for j in path) # displayed labels are one-indexed
-    print 2*d*' '+ label,p.element()
-    path.append(1) # path entries are zero-indexed
-    for c in T.children(p):
-        preorder_label(T, c, d+1, path) # child depth is d+1
-        path[-1] += 1
-    path.pop()
-
-def parenthesize(T, p):
-    """Print parenthesized representation of subtree of T rooted at p."""
-    print p.element(), # use of end avoids trailing newline
-    if not T.is_leaf(p):
-        first_time = True
-        for c in T.children(p):
-            sep ='(' if first_time else ',' # determine proper separator
-            print sep,
-            first_time = False # any future passes will not be the first
-            parenthesize(T, c) # recur on child
-        print ')', # include closing parenthesis
-
-def indentedparenthetic(T,p,size):
-    """Print parenthesized representation of subtree of T rooted at p."""
-    print 2*size*' '+str(p.element()),
-    if not T.is_leaf(p):
-        first_time = True
-        for c in T.children(p):
-            if first_time:
-                print '('
-            else:
-                print ''
-            first_time = False
-            indentedparenthetic(T,c,size+1) # recur on child
-        print ''
-        print 2*size*' '+')',
-
 def arithmetic_expression(T,p):
     """Caculate the result of an arithmetic expression implemented by a BinaryTree"""
     if T.is_leaf(p):
@@ -437,35 +397,6 @@ def convert_to_proper(impropertree,set_element):
             singlecount += 1
     return singlecount
 
-def element_height(T,p):
-    """print the element at position p and the height of p"""
-    if T.is_leaf(p):
-        print (p.element(),0),
-        return 0
-    else:
-        height= 1+max(element_height(T,i) for i in T.children(p))
-        print (p.element(),height),
-        return height
-
-def element_depth(T,p,depth=0):
-    """print the element at position p and the depth of p"""
-    print (p.element(),depth),
-    if not T.is_leaf(p):
-        for i in T.children(p):
-            element_depth(T,i,depth+1)
-
-def path_length(T,p,depth=0,result=0):
-    """Caculate the path length of a binarytree"""
-    result += depth
-    #for debug
-    #print (p.element(),depth,result),
-    if T.left(p):
-        result = path_length(T,T.left(p),depth+1,result)
-    if T.right(p):
-        result = path_length(T,T.right(p),depth+1,result)
-
-    return result
-
 def reflection_tree(p):
     if p == None:
         return p
@@ -473,20 +404,6 @@ def reflection_tree(p):
     p._left = reflection_tree(p._right)
     p._right = temp
     return p
-
-def isomorphic_tree(T1,T2,p1,p2):
-    """Test whether T1 and T2 are isomorphic"""
-    if T1.is_leaf(p1) and T2.is_leaf(p2):
-        return True
-    elif T1.num_children(p1) != T2.num_children(p2):
-        return False
-    else:
-        m = T2.children(p2)
-        for i in T1.children(p1):
-            j=m.next()
-            if not isomorphic_tree(T1,T2,i,j):
-                return False
-        return True
 
 def roman_traversal(T,p,roman_factor):
     """a.Desception:print out all the roman position in Tree T rooted at position p
@@ -603,28 +520,6 @@ if __name__ == '__main__':
     t1.intraversal()
     t1.posttraversal()
     t1.breadthfirsttraversal()
-    print ''
-
-    #-------------------------- Test code for traversal of table of contents --------------------
-    print "Test for print table of contents.........................."
-    t2 = LinkedBinaryTree()
-    t2n0 = t2.add_root('Paper')
-    t2n1 = t2.add_left(t2n0,'Title')
-    t2n2 = t2.add_right(t2n0,'Abstract')
-    t2n3 = t2.add_left(t2n2,'1.1')
-    t2n4 = t2.add_right(t2n2,'1.2')
-    # tradition way,waste of time
-    for i in t2.preorder():
-        print(2*t2.depth(i)*' '+str(i.element()))
-    # more efficient way
-    preorder_indent(t2,t2n0,0)
-
-    path=[2,3]
-    preorder_label(t2,t2n0,0,path)
-    print ''
-
-    parenthesize(t2,t2n0)
-    print ''
     print ''
 
     #-----------R-8.5----------------------------------------------------------------
@@ -932,20 +827,6 @@ if __name__ == '__main__':
     t51n4 = tree51.add_right(t51n3,'E')
     for i in tree51.preorder():
         print i._element,
-    print ''
-    print ''
-
-    #-----------C-8.56----------------------------------------------------------------
-    print "Test for C-8.56................................"
-    t56 = LinkedBinaryTree()
-    t56n0 = t56.add_root('Paper')
-    t56n1 = t56.add_left(t56n0,'Title')
-    t56n2 = t56.add_right(t56n0,'Abstract')
-    t56n3 = t56.add_left(t56n1,'1.1')
-    t56n4 = t56.add_right(t56n1,'1.2')
-    t56n5 = t56.add_left(t56n2,'2.1')
-    t56n6 = t56.add_right(t56n2,'2.2')
-    indentedparenthetic(t56,t56n0,0)
     print ''
     print ''
 
