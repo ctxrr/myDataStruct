@@ -11,6 +11,9 @@ int main(int argc, const char *argv[])
     Node *n2 = AddFront(mylist,2);
     ShowInfo(mylist);
     printf("size:%d\n", GetSize(mylist));
+    DelFront(mylist);
+    ShowInfo(mylist);
+    printf("size:%d\n", GetSize(mylist));
     return 0;
 }
 

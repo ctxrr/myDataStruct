@@ -22,6 +22,7 @@ int IsEmpty(List *L);
 Node *AddFront(List *L,ElementType e);
 int GetSize(List *L);
 void ShowInfo(List *L);
+void *DelFront(List *L);
 //void Insert(ElementType e,List *L,Node *P);
 // int IsLast(Position P,List L);
 // Position Find(ElementType X,List L);

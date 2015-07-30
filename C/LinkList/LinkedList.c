@@ -1,11 +1,13 @@
 #include "inc/LinkedList.h"
 #include<stdlib.h>
 #include<stdio.h>
+#include <string.h>
 
 List *InitList()
 {
     List *L;
-    L = malloc(sizeof(List));
+    L = (List *)malloc(sizeof(List));
+    memset(L,0,sizeof(List));
     L->size = 0;
 
     L->header  = NewNode(0,NULL);
@@ -17,7 +19,8 @@ List *InitList()
 Node *NewNode(ElementType e,Node *next)
 {
     Node *N;
-    N = malloc(sizeof(Node));
+    N = (Node *)malloc(sizeof(Node));
+    memset(N,0,sizeof(Node));
     N->Element = e;
     N->Next = next;
     return N;
@@ -34,6 +37,21 @@ Node *AddFront(List *L,ElementType e)
     L->header->Next = new;
     L->size++;
     return new;
+}
+
+void *DelFront(List *L)
+{
+    if(!IsEmpty(L))
+    {
+        Node *old = L->header->Next;
+        L->header->Next = old->Next;
+        free(old);
+        L->size--;
+    }
+    else
+    {
+        printf("List is empty!\n");
+    }
 }
 
 int GetSize(List *L)
