@@ -1,7 +1,6 @@
 
 #------------Import packet-----------------------------------------------------------------------
 from Tree import Tree
-import copy
 
 class LinkedTree(Tree):
     """Linked representation of a general tree structure."""

@@ -1,50 +1,52 @@
 from Tree import Tree
+from abc import ABCMeta,abstractmethod
 
 class BinaryTree(Tree):
+    __metaclass__ = ABCMeta
     """Abstract base class representing a binary tree structure."""
 
     # --------------------- additional abstract methods ---------------------
+    @abstractmethod
     def left(self, p):
         """Return a Position representing p's left child.
 
         Return None if p does not have a left child.
         """
-        raise NotImplementedError('must be implemented by subclass')
 
+    @abstractmethod
     def right(self, p):
         """Return a Position representing p's right child.
 
         Return None if p does not have a right child.
         """
-        raise NotImplementedError('must be implemented by subclass')
 
+    @abstractmethod
     def is_left_leaf(self, p):
         """Return True if Position p is the left leaf of its parent."""
-        raise NotImplementedError('must be implemented by subclass')
 
+    @abstractmethod
     def is_right_leaf(self, p):
         """Return True if Position p is the right leaf of its parent."""
-        raise NotImplementedError('must be implemented by subclass')
 
+    @abstractmethod
     def add_root(self, e):
         """Add root node"""
-        raise NotImplementedError('must be implemented by subclass')
 
+    @abstractmethod
     def add_left(self, p, e):
         """Add left child"""
-        raise NotImplementedError('must be implemented by subclass')
 
+    @abstractmethod
     def add_right(self, p, e):
         """Add right child"""
-        raise NotImplementedError('must be implemented by subclass')
 
+    @abstractmethod
     def replace(self, p, e):
         """Replace the element stored in p into e"""
-        raise NotImplementedError('must be implemented by subclass')
 
+    @abstractmethod
     def delete(self, p):
         """Delete the node p"""
-        raise NotImplementedError('must be implemented by subclass')
 
     # ---------- concrete methods implemented in this class ----------
     def sibling(self, p):

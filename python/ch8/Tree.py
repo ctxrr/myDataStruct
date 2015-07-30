@@ -1,7 +1,10 @@
 import sys
 sys.path.append('..')
 from ch7.SingleLinkedListAd import LinkedQueue
+from abc import ABCMeta,abstractmethod
+
 class Tree:
+    __metaclass__ = ABCMeta
     """Abstract base class representing a tree structure."""
 
     #------------------------------- nested Position class -------------------------------
@@ -26,33 +29,25 @@ class Tree:
             return not (self == other)            # opposite of __eq__
 
     # ---------- abstract methods that concrete subclass must support ----------
+    @abstractmethod
     def root(self):
         """Return Position representing the tree's root (or None if empty)."""
-        raise NotImplementedError('must be implemented by subclass')
 
+    @abstractmethod
     def parent(self, p):
         """Return Position representing p's parent (or None if p is root)."""
-        raise NotImplementedError('must be implemented by subclass')
 
+    @abstractmethod
     def num_children(self, p):
         """Return the number of children that Position p has."""
-        raise NotImplementedError('must be implemented by subclass')
 
+    @abstractmethod
     def children(self, p):
         """Generate an iteration of Positions representing p's children."""
-        raise NotImplementedError('must be implemented by subclass')
 
+    @abstractmethod
     def __len__(self):
         """Return the total number of elements in the tree."""
-        raise NotImplementedError('must be implemented by subclass')
-
-    def add_root(self,e):
-        """Add e as the root of tree T if T doesn't has a root ."""
-        raise NotImplementedError('must be implemented by subclass')
-
-    def add_child(self,e,p):
-        """Add e as the child of position p in tree T."""
-        raise NotImplementedError('must be implemented by subclass')
 
     # ---------- concrete methods implemented in this class ----------
     def is_root(self, p):
