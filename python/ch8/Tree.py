@@ -46,6 +46,14 @@ class Tree:
         """Return the total number of elements in the tree."""
         raise NotImplementedError('must be implemented by subclass')
 
+    def add_root(self,e):
+        """Add e as the root of tree T if T doesn't has a root ."""
+        raise NotImplementedError('must be implemented by subclass')
+
+    def add_child(self,e,p):
+        """Add e as the child of position p in tree T."""
+        raise NotImplementedError('must be implemented by subclass')
+
     # ---------- concrete methods implemented in this class ----------
     def is_root(self, p):
         """Return True if Position p represents the root of the tree."""
