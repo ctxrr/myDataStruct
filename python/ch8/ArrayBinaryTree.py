@@ -8,12 +8,11 @@ class ArrayBinaryTree(BinaryTree):
     #-------------------------- nested _Node class --------------------------
     class _Node:
         """Lightweight, nonpublic class for storing a node."""
-        __slots__ = '_element', '_index', '_valid' # streamline memory usage
+        __slots__ = '_element', '_index' # streamline memory usage
 
-        def __init__(self, element, index, valid = True):
+        def __init__(self, element, index):
             self._element = element
             self._index = index
-            self._valid = valid
 
     #-------------------------- nested Position class --------------------------
     class Position(BinaryTree.Position):
@@ -104,16 +103,16 @@ class ArrayBinaryTree(BinaryTree):
         node = self._validate(p)
         left_index = node._index*2+1
         ret = self._index_valid(left_index)
-        if ret:
+        if ret==1:
             raise ValueError('Left child exists')
 
         elif ret == 0:
             for i in range(len(self._array),left_index):
-                self._array.append(self._Node(None,i,False))
+                self._array.append(None)
             self._array.append(self._Node(e,left_index))
         else:                                   #ret == -1
-            self._array[left_index]._element = e
-            self._array[left_index]._valid = True
+            self._array.append(self._Node(e,left_index))
+
         self._size += 1
         return self._make_position(self._array[left_index])
 
@@ -122,16 +121,16 @@ class ArrayBinaryTree(BinaryTree):
         node = self._validate(p)
         right_index = node._index*2+2
         ret = self._index_valid(right_index)
-        if ret:
+        if ret==1:
             raise ValueError('Right child exists')
 
         elif ret == 0:
             for i in range(len(self._array),right_index):
-                self._array.append(self._Node(None,i,False))
+                self._array.append(None)
             self._array.append(self._Node(e,right_index))
         else:                                   #ret == -1
-            self._array[right_index]._element = e
-            self._array[right_index]._valid = True
+            self._array.append(self._Node(e,right_index))
+
         self._size += 1
         return self._make_position(self._array[right_index])
 
@@ -148,9 +147,16 @@ class ArrayBinaryTree(BinaryTree):
         """Test if the index is valid"""
         if index >= len(self._array):
             return 0
-        if not self._array[index]._valid:
+        if self._array[index] == None:
             return -1
         return 1
+
+    def getelement(self,index):
+        """Return the element by given index.Return None if there is none node"""
+        if self._array[index]:
+            return self._make_position(self._array[index])
+        else:
+            return None
 
 #------------Stand alone function--------------------------------------------------------------
 
