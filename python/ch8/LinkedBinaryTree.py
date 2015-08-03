@@ -788,3 +788,80 @@ if __name__ == '__main__':
     print 'Diameter:',diameter(T,r0)
     print 'Diameter:',diameterOpt(T,r0)[0]
 
+    #-----------P-8.66----------------------------------------------------------------
+    print "Test for P-8.66................................"
+    # define a subclass of LinkedBinaryTree named Linkedbinarytreebeta
+    class LinkedBinaryTreeBeta(LinkedBinaryTree):
+        # re-implemented some method to suport field '_path'
+        class _Node:
+            def __init__(self, element, left=None, right=None):
+                self._element = element
+                self._left = left
+                self._right = right
+
+        class Position:
+            def __init__(self, container, node,path):
+                self._container = container
+                self._node = node
+                self._path = path
+
+        def _validate(self, p):
+            if not isinstance(p, self.Position):
+                raise TypeError('p must be proper Position type')
+            if p._container is not self:
+                raise ValueError('p does not belong to this container')
+            return p._node
+
+        def _make_position(self, node,path):
+            return self.Position(self, node,path) if node is not None else None
+
+        def _add_root(self, e):
+            if self._root is not None:
+                raise ValueError('Root exists')
+            self._size = 1
+            self._root = self._Node(e)
+            return self._make_position(self._root,[self._root])
+
+        def _add_left(self, p, e):
+            node = self._validate(p)
+            if node._left is not None:
+                raise ValueError('Left child exists')
+            self._size += 1
+            node._left = self._Node(e)                  # node is its parent
+            return self._make_position(node._left,p._path+[node._left])
+
+        def _add_right(self, p, e):
+            node = self._validate(p)
+            if node._right is not None:
+                raise ValueError('Right child exists')
+            self._size += 1
+            node._right = self._Node(e)                 # node is its parent
+            return self._make_position(node._right,p._path+[node._right])
+
+    # test code
+    T = LinkedBinaryTreeBeta()
+    r0 = T.add_root(0)
+    r1 = T.add_left(r0,1)
+    r2 = T.add_right(r0,2)
+    r3 = T.add_left(r1,3)
+    r4 = T.add_right(r1,4)
+    r5 = T.add_left(r2,5)
+    r6 = T.add_right(r2,6)
+    r7 = T.add_left(r3,7)
+    r8 = T.add_right(r3,8)
+    r9 = T.add_right(r4,9)
+    r10 = T.add_left(r6,10)
+    r11 = T.add_right(r6,11)
+    r12 = T.add_left(r8,12)
+    r13 = T.add_left(r10,13)
+    r14 = T.add_right(r10,14)
+    r15 = T.add_left(r11,15)
+    r16 = T.add_right(r11,16)
+
+    # test the path
+    print 'Show the path of Position:',
+    for i in r16._path:
+        print i._element,
+    print ''
+    print ''
+
