@@ -15,18 +15,30 @@ class Tree:
         Therefore, users should always rely on syntax 'p == q' rather than 'p is q' when testing
         equivalence of positions.
         """
+        def __init__(self, container, node):
+            """Constructor should not be invoked by user."""
+            self._container = container
+            self._node = node
 
         def element(self):
             """Return the element stored at this Position."""
-            raise NotImplementedError('must be implemented by subclass')
+            return self._node._element
 
         def __eq__(self, other):
-            """Return True if other Position represents the same location."""
-            raise NotImplementedError('must be implemented by subclass')
+            """Return True if other is a Position representing the same location."""
+            return type(other) is type(self) and other._node is self._node
 
         def __ne__(self, other):
             """Return True if other does not represent the same location."""
             return not (self == other)            # opposite of __eq__
+
+    def _validate(self, p):
+        """Return associated node, if position is valid."""
+        raise NotImplementedError()
+
+    def _make_position(self, node):
+        """Return Position instance for given node (or None if no node)."""
+        return self.Position(self, node) if node is not None else None
 
     # ---------- abstract methods that concrete subclass must support ----------
     @abstractmethod
@@ -134,4 +146,25 @@ class Tree:
                 yield p                          # report this position
                 for c in self.children(p):
                     fringe.enqueue(c)              # add children to back of queue
+
+    def pretraversal(self):
+        """Show the infomation of the current tree in preorder traversal"""
+        print 'Preorder traversal :[',
+        for i in self.preorder():
+            print i.element(),
+        print ']'
+
+    def posttraversal(self):
+        """Show the infomation of the current tree in postorder traversal"""
+        print 'Postorder traversal:[',
+        for i in self.postorder():
+            print i.element(),
+        print ']'
+
+    def breadthfirsttraversal(self):
+        """Show the infomation of the current tree in breadthfirst traversal"""
+        print 'BinaryTree traversal in breadth first order:[',
+        for i in self.breadthfirst():
+            print i.element(),
+        print ']'
 

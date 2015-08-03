@@ -16,38 +16,6 @@ class LinkedTree(Tree):
             self._parent = parent
             self._children = []
 
-    #-------------------------- nested Position class --------------------------
-    class Position(Tree.Position):
-        """An abstraction representing the location of a single element."""
-
-        def __init__(self, container, node):
-            """Constructor should not be invoked by user."""
-            self._container = container
-            self._node = node
-
-        def element(self):
-            """Return the element stored at this Position."""
-            return self._node._element
-
-        def __eq__(self, other):
-            """Return True if other is a Position representing the same location."""
-            return type(other) is type(self) and other._node is self._node
-
-    #------------------------------- utility methods -------------------------------
-    def _validate(self, p):
-        """Return associated node, if position is valid."""
-        if not isinstance(p, self.Position):
-            raise TypeError('p must be proper Position type')
-        if p._container is not self:
-            raise ValueError('p does not belong to this container')
-        if p._node._parent is p._node:      # convention for deprecated nodes
-            raise ValueError('p is no longer valid')
-        return p._node
-
-    def _make_position(self, node):
-        """Return Position instance for given node (or None if no node)."""
-        return self.Position(self, node) if node is not None else None
-
     #-------------------------- general tree constructor --------------------------
     def __init__(self):
         self._root = None
@@ -78,6 +46,18 @@ class LinkedTree(Tree):
         """Return the total number of elements in the tree."""
         return self._size
 
+    def _validate(self, p):
+        """Return associated node, if position is valid."""
+        if not isinstance(p, self.Position):
+            raise TypeError('p must be proper Position type')
+        if p._container is not self:
+            raise ValueError('p does not belong to this container')
+        if p._node._parent is p._node:      # convention for deprecated nodes
+            raise ValueError('p is no longer valid')
+        return p._node
+
+
+    # --------------------- additional public methods ---------------------
     def add_root(self,e):
         new = self._Node(e)
         self._root = new
@@ -91,34 +71,12 @@ class LinkedTree(Tree):
         self._size += 1
         return self._make_position(new)
 
-    # --------------------- additional public methods ---------------------
     def get_child(self,p,index):
         if index>self.num_children(p):
             print 'index out of range'
             return
         node = self._validate(p)
         return self._make_position(node._children[index])
-
-    def pretraversal(self):
-        """Show the infomation of the current tree in preorder traversal"""
-        print 'Preorder traversal :[',
-        for i in self.preorder():
-            print i.element(),
-        print ']'
-
-    def posttraversal(self):
-        """Show the infomation of the current tree in postorder traversal"""
-        print 'Postorder traversal:[',
-        for i in self.postorder():
-            print i.element(),
-        print ']'
-
-    def breadthfirsttraversal(self):
-        """Show the infomation of the current tree in breadthfirst traversal"""
-        print 'BinaryTree traversal in breadth first order:[',
-        for i in self.breadthfirst():
-            print i.element(),
-        print ']'
 
 #------------Stand alone function--------------------------------------------------------------
 def preorder_indent(T, p, d):

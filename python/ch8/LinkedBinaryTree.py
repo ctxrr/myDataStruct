@@ -19,38 +19,6 @@ class LinkedBinaryTree(BinaryTree):
             self._left = left
             self._right = right
 
-    #-------------------------- nested Position class --------------------------
-    class Position(BinaryTree.Position):
-        """An abstraction representing the location of a single element."""
-
-        def __init__(self, container, node):
-            """Constructor should not be invoked by user."""
-            self._container = container
-            self._node = node
-
-        def element(self):
-            """Return the element stored at this Position."""
-            return self._node._element
-
-        def __eq__(self, other):
-            """Return True if other is a Position representing the same location."""
-            return type(other) is type(self) and other._node is self._node
-
-    #------------------------------- utility methods -------------------------------
-    def _validate(self, p):
-        """Return associated node, if position is valid."""
-        if not isinstance(p, self.Position):
-            raise TypeError('p must be proper Position type')
-        if p._container is not self:
-            raise ValueError('p does not belong to this container')
-        if p._node._parent is p._node:      # convention for deprecated nodes
-            raise ValueError('p is no longer valid')
-        return p._node
-
-    def _make_position(self, node):
-        """Return Position instance for given node (or None if no node)."""
-        return self.Position(self, node) if node is not None else None
-
     #-------------------------- binary tree constructor --------------------------
     def __init__(self):
         """Create an initially empty binary tree."""
@@ -91,14 +59,6 @@ class LinkedBinaryTree(BinaryTree):
             count += 1
         return count
 
-    def is_left_leaf(self, p):
-        """Return True if Position p is the left leaf of its parent."""
-        return self.is_leaf(p) and p==self.left(self.parent(p))
-
-    def is_right_leaf(self, p):
-        """Return True if Position p is the right leaf of its parent."""
-        return self.is_leaf(p) and p==self.right(self.parent(p))
-
     def add_root(self, e):
         """Add root node"""
         return self._add_root(e)
@@ -115,13 +75,41 @@ class LinkedBinaryTree(BinaryTree):
         """Replace the element stored in p into e"""
         return self._replace(p,e)
 
+    def delete(self, p):
+        """Delete the node p"""
+        return self._delete(p)
+
+    #-------------------------- override accessors methods -----------------
+    def positions(self):
+        """Generate an iteration of the tree's positions."""
+        if not self.is_empty():
+            for p in self._subtree_preorder(self.root()):
+                yield p
+
+    # --------------------- additional public methods ---------------------
     def swap(self,p,q):
         """Swap the node p and q"""
         return self._swap(p,q)
 
-    def delete(self, p):
-        """Delete the node p"""
-        return self._delete(p)
+    def is_left_leaf(self, p):
+        """Return True if Position p is the left leaf of its parent."""
+        return self.is_leaf(p) and p==self.left(self.parent(p))
+
+    def is_right_leaf(self, p):
+        """Return True if Position p is the right leaf of its parent."""
+        return self.is_leaf(p) and p==self.right(self.parent(p))
+
+    def addsibling(self,p,e):
+        """Add a new Position representing p's sibling if p don't have sibling"""
+        if self.sibling(p):
+            print 'already have sibling ,operation forbidden!'
+            return
+        else:
+            parent = self.parent(p)
+            if p == self.left(parent):
+                return self._add_right(parent,e)         # possibly None
+            else:
+                return self._add_left(parent,e)
 
     def delete_subtree(self,p):
         """Delete the subtrees of node p"""
@@ -142,54 +130,6 @@ class LinkedBinaryTree(BinaryTree):
     def balance_factor(self,p):
         """Return the balance factor of posion p"""
         return self.height(self.left(p)) - self.height(self.right(p))
-
-    #-------------------------- override accessors methods -----------------
-    def positions(self):
-        """Generate an iteration of the tree's positions."""
-        if not self.is_empty():
-            for p in self._subtree_preorder(self.root()):
-                yield p
-
-    # --------------------- additional public methods ---------------------
-    def addsibling(self,p,e):
-        """Add a new Position representing p's sibling if p don't have sibling"""
-        if self.sibling(p):
-            print 'already have sibling ,operation forbidden!'
-            return
-        else:
-            parent = self.parent(p)
-            if p == self.left(parent):
-                return self._add_right(parent,e)         # possibly None
-            else:
-                return self._add_left(parent,e)
-
-    def pretraversal(self):
-        """Show the infomation of the current tree in preorder traversal"""
-        print 'Preorder traversal :[',
-        for i in self.preorder():
-            print i.element(),
-        print ']'
-
-    def intraversal(self):
-        """Show the infomation of the current tree in inorder traversal"""
-        print 'Inorder traversal  :[',
-        for i in self.inorder():
-            print i.element(),
-        print ']'
-
-    def posttraversal(self):
-        """Show the infomation of the current tree in postorder traversal"""
-        print 'Postorder traversal:[',
-        for i in self.postorder():
-            print i.element(),
-        print ']'
-
-    def breadthfirsttraversal(self):
-        """Show the infomation of the current tree in breadthfirst traversal"""
-        print 'BinaryTree traversal in breadth first order:[',
-        for i in self.breadthfirst():
-            print i.element(),
-        print ']'
 
     #-------------------------- nonpublic mutators --------------------------
     def _add_root(self, e):

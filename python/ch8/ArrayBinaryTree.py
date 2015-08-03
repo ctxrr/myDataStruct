@@ -14,26 +14,14 @@ class ArrayBinaryTree(BinaryTree):
             self._element = element
             self._index = index
             self._valid = valid
+
     #-------------------------- nested Position class --------------------------
     class Position(BinaryTree.Position):
         """An abstraction representing the location of a single element."""
 
-        def __init__(self, container, node):
-            """Constructor should not be invoked by user."""
-            self._container = container
-            self._node = node
-
-        def element(self):
-            """Return the element stored at this Position."""
-            return self._node._element
-
         def index(self):
             """Return the index stored at this Position."""
             return self._node._index
-
-        def __eq__(self, other):
-            """Return True if other is a Position representing the same location."""
-            return type(other) is type(self) and other._node is self._node
 
     #------------------------------- utility methods -------------------------------
     def _validate(self, p):
@@ -43,10 +31,6 @@ class ArrayBinaryTree(BinaryTree):
         if p._container is not self:
             raise ValueError('p does not belong to this container')
         return p._node
-
-    def _make_position(self, node):
-        """Return Position instance for given node (or None if no node)."""
-        return self.Position(self, node) if node is not None else None
 
     #-------------------------- binary tree constructor --------------------------
     def __init__(self):
@@ -88,7 +72,7 @@ class ArrayBinaryTree(BinaryTree):
         """
         node = self._validate(p)
         left_index = node._index*2+1
-        if self.index_valid(left_index)==1:
+        if self._index_valid(left_index)==1:
             return self._make_position(self._array[left_index])
         else:
             return None
@@ -100,18 +84,10 @@ class ArrayBinaryTree(BinaryTree):
         """
         node = self._validate(p)
         right_index = node._index*2+2
-        if self.index_valid(right_index)==1:
+        if self._index_valid(right_index)==1:
             return self._make_position(self._array[right_index])
         else:
             return None
-
-    def is_left_leaf(self, p):
-        """Return True if Position p is the left leaf of its parent."""
-        pass
-
-    def is_right_leaf(self, p):
-        """Return True if Position p is the right leaf of its parent."""
-        pass
 
     def add_root(self, e):
         """Add root node"""
@@ -127,7 +103,7 @@ class ArrayBinaryTree(BinaryTree):
         """Add left child"""
         node = self._validate(p)
         left_index = node._index*2+1
-        ret = self.index_valid(left_index)
+        ret = self._index_valid(left_index)
         if ret:
             raise ValueError('Left child exists')
 
@@ -145,7 +121,7 @@ class ArrayBinaryTree(BinaryTree):
         """Add right child"""
         node = self._validate(p)
         right_index = node._index*2+2
-        ret = self.index_valid(right_index)
+        ret = self._index_valid(right_index)
         if ret:
             raise ValueError('Right child exists')
 
@@ -168,41 +144,13 @@ class ArrayBinaryTree(BinaryTree):
         pass
 
     # --------------------- additional public methods ---------------------
-    def index_valid(self,index):
+    def _index_valid(self,index):
         """Test if the index is valid"""
         if index >= len(self._array):
             return 0
         if not self._array[index]._valid:
             return -1
         return 1
-
-    def pretraversal(self):
-        """Show the infomation of the current tree in preorder traversal"""
-        print 'Preorder traversal :[',
-        for i in self.preorder():
-            print i.element(),
-        print ']'
-
-    def intraversal(self):
-        """Show the infomation of the current tree in inorder traversal"""
-        print 'Inorder traversal  :[',
-        for i in self.inorder():
-            print i.element(),
-        print ']'
-
-    def posttraversal(self):
-        """Show the infomation of the current tree in postorder traversal"""
-        print 'Postorder traversal:[',
-        for i in self.postorder():
-            print i.element(),
-        print ']'
-
-    def breadthfirsttraversal(self):
-        """Show the infomation of the current tree in breadthfirst traversal"""
-        print 'BinaryTree traversal in breadth first order:[',
-        for i in self.breadthfirst():
-            print i.element(),
-        print ']'
 
 #------------Stand alone function--------------------------------------------------------------
 

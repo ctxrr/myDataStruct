@@ -21,14 +21,6 @@ class BinaryTree(Tree):
         """
 
     @abstractmethod
-    def is_left_leaf(self, p):
-        """Return True if Position p is the left leaf of its parent."""
-
-    @abstractmethod
-    def is_right_leaf(self, p):
-        """Return True if Position p is the right leaf of its parent."""
-
-    @abstractmethod
     def add_root(self, e):
         """Add root node"""
 
@@ -73,18 +65,6 @@ class BinaryTree(Tree):
             for p in self._subtree_inorder(self.root()):
                 yield p
 
-    def preorder(self):
-        """Generate an inorder iteration of positions in the tree."""
-        if not self.is_empty():
-            for p in self._subtree_preorder(self.root()):
-                yield p
-
-    def postorder(self):
-        """Generate an inorder iteration of positions in the tree."""
-        if not self.is_empty():
-            for p in self._subtree_postorder(self.root()):
-                yield p
-
     def _subtree_inorder(self, p):
         """Generate an inorder iteration of positions in subtree rooted at p."""
         if self.left(p) is not None:          # if left child exists, traverse its subtree
@@ -94,6 +74,24 @@ class BinaryTree(Tree):
         if self.right(p) is not None:         # if right child exists, traverse its subtree
             for other in self._subtree_inorder(self.right(p)):
                 yield other
+
+    def intraversal(self):
+        """Show the infomation of the current tree in inorder traversal"""
+        print 'Inorder traversal  :[',
+        for i in self.inorder():
+            print i.element(),
+        print ']'
+
+     #---------- override the methods that implemented in super class ----------
+    def _validate(self, p):
+        """Return associated node, if position is valid."""
+        if not isinstance(p, self.Position):
+            raise TypeError('p must be proper Position type')
+        if p._container is not self:
+            raise ValueError('p does not belong to this container')
+        if p._node._parent is p._node:      # convention for deprecated nodes
+            raise ValueError('p is no longer valid')
+        return p._node
 
     def _subtree_preorder(self, p):
         """Generate an inorder iteration of positions in subtree rooted at p."""
@@ -115,7 +113,7 @@ class BinaryTree(Tree):
                 yield other
         yield p                               # visit p between its subtrees
 
-    # override inherited version to make inorder the default
     def positions(self):
         """Generate an iteration of the tree's positions."""
         return self.inorder()                 # make inorder the default
+
