@@ -32,6 +32,7 @@ class Tree:
             """Return True if other does not represent the same location."""
             return not (self == other)            # opposite of __eq__
 
+    #------------------------------- utility methods -------------------------------
     def _validate(self, p):
         """Return associated node, if position is valid."""
         raise NotImplementedError()

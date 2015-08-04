@@ -839,28 +839,28 @@ if __name__ == '__main__':
             return self._make_position(node._right,p._path+[node._right])
 
     # test code
-    T = LinkedBinaryTreeBeta()
-    r0 = T.add_root(0)
-    r1 = T.add_left(r0,1)
-    r2 = T.add_right(r0,2)
-    r3 = T.add_left(r1,3)
-    r4 = T.add_right(r1,4)
-    r5 = T.add_left(r2,5)
-    r6 = T.add_right(r2,6)
-    r7 = T.add_left(r3,7)
-    r8 = T.add_right(r3,8)
-    r9 = T.add_right(r4,9)
-    r10 = T.add_left(r6,10)
-    r11 = T.add_right(r6,11)
-    r12 = T.add_left(r8,12)
-    r13 = T.add_left(r10,13)
-    r14 = T.add_right(r10,14)
-    r15 = T.add_left(r11,15)
-    r16 = T.add_right(r11,16)
+    tree66 = LinkedBinaryTreeBeta()
+    t66n0 = tree66.add_root(0)
+    t66n1 = tree66.add_left(t66n0,1)
+    t66n2 = tree66.add_right(t66n0,2)
+    t66n3 = tree66.add_left(t66n1,3)
+    t66n4 = tree66.add_right(t66n1,4)
+    t66n5 = tree66.add_left(t66n2,5)
+    t66n6 = tree66.add_right(t66n2,6)
+    t66n7 = tree66.add_left(t66n3,7)
+    t66n8 = tree66.add_right(t66n3,8)
+    t66n9 = tree66.add_right(t66n4,9)
+    t66n10 = tree66.add_left(t66n6,10)
+    t66n11 = tree66.add_right(t66n6,11)
+    t66n12 = tree66.add_left(t66n8,12)
+    t66n13 = tree66.add_left(t66n10,13)
+    t66n14 = tree66.add_right(t66n10,14)
+    t66n15 = tree66.add_left(t66n11,15)
+    t66n16 = tree66.add_right(t66n11,16)
 
     # test the path
     print 'Show the path of Position:',
-    for i in r16._path:
+    for i in t66n16._path:
         print i._element,
     print ''
     print ''
