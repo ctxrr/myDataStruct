@@ -3,7 +3,7 @@ sys.path.append('..')
 from ch7.SingleLinkedListAd import LinkedQueue
 from abc import ABCMeta,abstractmethod
 
-class Tree:
+class Tree(object):
     __metaclass__ = ABCMeta
     """Abstract base class representing a tree structure."""
 
