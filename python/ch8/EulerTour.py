@@ -1,6 +1,7 @@
 
 #------------Import packet-----------------------------------------------------------------------
 from LinkedBinaryTree import LinkedBinaryTree
+from ArrayBinaryTree import ArrayBinaryTree
 #------------Class LinkedBinaryTree--------------------------------------------------------------
 class EulerTour(object):
     """Abstract base class for performing Euler tour of a tree.
@@ -151,15 +152,15 @@ if __name__ == '__main__':
     print ''
 
     #-------------------------- test the usage of euler tour traversal --------------------
-    print "Test 1................................"
-    t1 = PreorderPrintIndentedTour(T)
-    t1.execute()
+    #print "Test 1................................"
+    #t1 = PreorderPrintIndentedTour(T)
+    #t1.execute()
     print "Test 2................................"
     t2 = PreorderPrintIndentedLabeledTour(T)
     t2.execute()
-    print "Test 3................................"
-    t3 = ParenthesizeTour(T)
-    t3.execute()
+    #print "Test 3................................"
+    #t3 = ParenthesizeTour(T)
+    #t3.execute()
     print ''
     #print "Test 4................................"
     #t4 = DiskSpaceTour(T)
@@ -170,3 +171,39 @@ if __name__ == '__main__':
     #print "Test 6................................"
     #t6 = BinaryLayout(T)
     #t6.execute()
+
+    #-----------R-8.17----------------------------------------------------------------
+    print "Test for R-8.17................................"
+
+    # definition of class
+    class ShowLevel(EulerTour):
+        def _hook_previsit(self, p, d, path):
+            pass
+
+        def _hook_postvisit(self, p, d, path, results):
+            pass
+
+    # test code
+    tree17 = ArrayBinaryTree()
+    t17n0 = tree17.add_root(0)
+    t17n1 = tree17.add_left(t17n0,1)
+    t17n2 = tree17.add_right(t17n0,2)
+    t17n3 = tree17.add_left(t17n1,3)
+    t17n4 = tree17.add_right(t17n1,4)
+    t17n5 = tree17.add_left(t17n2,5)
+    t17n6 = tree17.add_right(t17n2,6)
+    t17n7 = tree17.add_left(t17n3,7)
+    t17n8 = tree17.add_right(t17n3,8)
+    t17n10 = tree17.add_right(t17n4,10)
+    t17n13 = tree17.add_left(t17n6,13)
+    t17n14 = tree17.add_right(t17n6,14)
+    t17n17 = tree17.add_left(t17n8,17)
+    t17n27 = tree17.add_left(t17n13,27)
+    t17n28 = tree17.add_right(t17n13,28)
+    t17n29 = tree17.add_left(t17n14,29)
+    t17n30 = tree17.add_right(t17n14,30)
+    print ''
+    tree17b = ShowLevel(tree17)
+    tree17b.execute()
+
+
