@@ -1,7 +1,6 @@
 
 #------------Import packet-----------------------------------------------------------------------
-from LinkedBinaryTree import LinkedBinaryTree
-from ArrayBinaryTree import ArrayBinaryTree
+
 #------------Class LinkedBinaryTree--------------------------------------------------------------
 class EulerTour(object):
     """Abstract base class for performing Euler tour of a tree.
@@ -130,6 +129,11 @@ class BinaryLayout(BinaryEulerTour):
 
 #------------test code--------------------------------------------------------------
 if __name__ == '__main__':
+    #------------Import packet-----------------------------------------------------------------------
+    from LinkedBinaryTree import LinkedBinaryTree
+    from ArrayBinaryTree import ArrayBinaryTree
+    from copy import deepcopy
+
     #-------------------------- Init a linked binary tree for further use --------------------
     T = LinkedBinaryTree()
     r0 = T.add_root(0)
@@ -174,7 +178,6 @@ if __name__ == '__main__':
 
     #-----------R-8.17----------------------------------------------------------------
     print "Test for R-8.17................................"
-
     # definition of class
     class ShowLevel(EulerTour):
         def _hook_previsit(self, p, d, path):
@@ -182,7 +185,6 @@ if __name__ == '__main__':
 
         def _hook_postvisit(self, p, d, path, results):
             pass
-
     # test code
     tree17 = ArrayBinaryTree()
     t17n0 = tree17.add_root(0)
@@ -206,4 +208,41 @@ if __name__ == '__main__':
     tree17b = ShowLevel(tree17)
     tree17b.execute()
 
+    #-----------R-8.29----------------------------------------------------------------
+    print "Test for R-8.29................................"
 
+    # definition of class
+    class CalDescendant(EulerTour):
+        def _hook_postvisit(self, p, d, path, results):
+            num = 0
+            for i in results:
+                num +=i
+            print (p.element(),num+1),
+            return num+1
+    # test code
+    tree29a = deepcopy(T)
+    tree29b = CalDescendant(tree29a)
+    tree29b.execute()
+    print ''
+
+    #-----------C-8.47----------------------------------------------------------------
+    print "Test for C-8.47................................"
+    # definition of class
+    class ShowBalance(EulerTour):
+        def _hook_postvisit(self, p, d, path, results):
+            if self._tree.is_leaf(p):
+                subheight = (0,0)
+            else:
+                subheight = results
+            height = max(subheight)+1
+            if len(results)==1:
+                factor = subheight[0]
+            else:
+                factor = subheight[0] - subheight[1]
+            print (p.element(),factor),
+            return height
+    # test code
+    tree47a = deepcopy(T)
+    tree47b = ShowBalance(tree47a)
+    tree47b.execute()
+    print ''
