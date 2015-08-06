@@ -1,7 +1,6 @@
 
 #------------Import packet-----------------------------------------------------------------------
 from BinaryTree import BinaryTree
-import copy
 
 #------------Class Arraybinarytree--------------------------------------------------------------
 class ArrayBinaryTree(BinaryTree):
@@ -162,6 +161,10 @@ class ArrayBinaryTree(BinaryTree):
 
 #------------Test code-------------------------------------------------------------------------
 if __name__ == '__main__':
+    #-------------------------- import -----------------------------------------
+    import copy
+
+    #-------------------------- Init a tree for further use --------------------
     T = ArrayBinaryTree()
 
     r0 = T.add_root(0)

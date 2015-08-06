@@ -1,8 +1,8 @@
 
 #------------Import packet-----------------------------------------------------------------------
 from Tree import Tree
-import copy
 
+#------------Class LinkedTree--------------------------------------------------------------------
 class LinkedTree(Tree):
     """Linked representation of a general tree structure."""
 
@@ -163,6 +163,9 @@ def path_length(T,p,depth=0,result=0):
 
 #------------Test code-------------------------------------------------------------------------
 if __name__ == '__main__':
+    #-------------------------- import -----------------------------------------
+    import copy
+
     #-------------------------- Init a tree for further use --------------------
     T = LinkedTree()
     r0 = T.add_root(0)

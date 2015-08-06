@@ -1,8 +1,6 @@
 
 #------------Import packet-----------------------------------------------------------------------
 from BinaryTree import BinaryTree
-from LinkedTree import isomorphic_tree,element_height,element_depth,path_length
-import copy
 
 #------------Class LinkedBinaryTree--------------------------------------------------------------
 class LinkedBinaryTree(BinaryTree):
@@ -432,6 +430,9 @@ def diameterOpt(T,p):
 
 #------------Test code-------------------------------------------------------------------------
 if __name__ == '__main__':
+    #-------------------------- import -----------------------------------------
+    import copy
+    from LinkedTree import isomorphic_tree,element_height,element_depth,path_length
     #-------------------------- Init a tree for further use --------------------
     T = LinkedBinaryTree()
     r0 = T.add_root(0)
