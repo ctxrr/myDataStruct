@@ -30,6 +30,7 @@ class HeapPriorityQueue(PriorityQueueBase): # base class defines _Item
         self._data[i], self._data[j] = self._data[j], self._data[i]
 
     def _upheap(self, j):
+        #self.showinfo()
         parent = self._parent(j)
         if j > 0 and self._data[j] < self._data[parent]:
             self._swap(j, parent)
@@ -60,6 +61,7 @@ class HeapPriorityQueue(PriorityQueueBase): # base class defines _Item
         """Add a key-value pair to the priority queue."""
         self._data.append(self._Item(key, value))
         self._upheap(len(self._data) - 1)            # upheap newly added position
+        self.showinfo()
 
     def min(self):
         """Return but do not remove (k,v) tuple with minimum key.
@@ -82,13 +84,43 @@ class HeapPriorityQueue(PriorityQueueBase): # base class defines _Item
         item = self._data.pop()                      # and remove it from the list;
         self._downheap(0)                            # then fix new root
         return (item._key, item._value)
+    def showinfo(self):
+        print '[',
+        for i in self._data:
+            print i,
+        print ']'
+
+#------------Class HeapPriorityQueue--------------------------------------------------------------
+class BottomUpHeap(HeapPriorityQueue): # base class defines _Item
+
+    def __init__ (self, contents=()):
+        """Create a new priority queue.
+        By default, queue will be empty. If contents is given, it should be as an
+        iterable sequence of (k,v) tuples specifying the initial contents.
+        """
+        self._data = [ self._Item(k,v) for k,v in contents ] # empty by default
+        if len(self._data) > 1:
+            self._heapify()
+
+    def _heapify(self):
+        start = self._parent(len(self) - 1) # start at PARENT of last leaf
+        for j in range(start, -1, -1): # going to and including the root
+            self._downheap(j)
 
 #------------ Test code--------------------------------------------------------------
 if __name__ == '__main__':
+    # init priority queue
     PQ = HeapPriorityQueue()
-    PQ.add(3,'c')
-    PQ.add(1,'a')
+    PQ.add(33,'c')
+    PQ.add(11,'a')
     PQ.add(2,'b')
     PQ.add(4,'d')
-    PQ.remove_min()
+    PQ.add(14,'c')
+
+    PQ1 = BottomUpHeap()
+    PQ1.add(33,'c')
+    PQ1.add(11,'a')
+    PQ1.add(2,'b')
+    PQ1.add(4,'d')
+    PQ1.add(14,'c')
 
