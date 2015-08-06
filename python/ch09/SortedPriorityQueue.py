@@ -1,6 +1,12 @@
-from .priority_queue_base import PriorityQueueBase
-from ..ch07.positional_list import PositionalList
-from ..exceptions import Empty
+
+#------------Import packet-----------------------------------------------------------------------
+import sys
+sys.path.append('..')
+from PriorityQueueBase import PriorityQueueBase
+from ch07.PositionalList import PositionalList
+from tools.Exceptions import Empty
+
+#------------Class SortedPriorityQueue--------------------------------------------------------------
 
 class SortedPriorityQueue(PriorityQueueBase): # base class defines _Item
     """A min-oriented priority queue implemented with a sorted list."""
@@ -13,6 +19,11 @@ class SortedPriorityQueue(PriorityQueueBase): # base class defines _Item
     def __len__(self):
         """Return the number of items in the priority queue."""
         return len(self._data)
+
+    def __iter__(self):
+        """Generate an iterable"""
+        for i in self._data:
+            yield i
 
     def add(self, key, value):
         """Add a key-value pair."""
@@ -45,3 +56,17 @@ class SortedPriorityQueue(PriorityQueueBase): # base class defines _Item
             raise Empty('Priority queue is empty.')
         item = self._data.delete(self._data.first())
         return (item._key, item._value)
+
+#------------ Test code--------------------------------------------------------------
+if __name__ == '__main__':
+    PQ = SortedPriorityQueue()
+    PQ.add(3,'c')
+    PQ.add(1,'a')
+    PQ.add(2,'b')
+    PQ.add(4,'d')
+    PQ.showinfo()
+    PQ.remove_min()
+    PQ.showinfo()
+    PQ.remove_min()
+    PQ.showinfo()
+

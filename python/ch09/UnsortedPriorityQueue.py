@@ -1,7 +1,12 @@
-from .priority_queue_base import PriorityQueueBase
-from ..ch07.positional_list import PositionalList
-from ..exceptions import Empty
 
+#------------Import packet-----------------------------------------------------------------------
+import sys
+sys.path.append('..')
+from PriorityQueueBase import PriorityQueueBase
+from ch07.PositionalList import PositionalList
+from tools.Exceptions import Empty
+
+#------------Class UnsortedPriorityQueue--------------------------------------------------------------
 class UnsortedPriorityQueue(PriorityQueueBase): # base class defines _Item
     """A min-oriented priority queue implemented with an unsorted list."""
 
@@ -27,6 +32,11 @@ class UnsortedPriorityQueue(PriorityQueueBase): # base class defines _Item
         """Return the number of items in the priority queue."""
         return len(self._data)
 
+    def __iter__(self):
+        """Generate an iterable"""
+        for i in self._data:
+            yield i
+
     def add(self, key, value):
         """Add a key-value pair."""
         self._data.add_last(self._Item(key, value))
@@ -48,3 +58,17 @@ class UnsortedPriorityQueue(PriorityQueueBase): # base class defines _Item
         p = self._find_min()
         item = self._data.delete(p)
         return (item._key, item._value)
+
+#------------ Test code--------------------------------------------------------------
+if __name__ == '__main__':
+    PQ = UnsortedPriorityQueue()
+    PQ.add(3,'c')
+    PQ.add(1,'a')
+    PQ.add(2,'b')
+    PQ.add(4,'d')
+    PQ.showinfo()
+    PQ.remove_min()
+    PQ.showinfo()
+    PQ.remove_min()
+    PQ.showinfo()
+

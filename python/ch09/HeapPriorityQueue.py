@@ -1,6 +1,11 @@
-from .priority_queue_base import PriorityQueueBase
-from ..exceptions import Empty
 
+#------------Import packet-----------------------------------------------------------------------
+import sys
+sys.path.append('..')
+from PriorityQueueBase import PriorityQueueBase
+from tools.Exceptions import Empty
+
+#------------Class HeapPriorityQueue--------------------------------------------------------------
 class HeapPriorityQueue(PriorityQueueBase): # base class defines _Item
     """A min-oriented priority queue implemented with a binary heap."""
 
@@ -77,3 +82,13 @@ class HeapPriorityQueue(PriorityQueueBase): # base class defines _Item
         item = self._data.pop()                      # and remove it from the list;
         self._downheap(0)                            # then fix new root
         return (item._key, item._value)
+
+#------------ Test code--------------------------------------------------------------
+if __name__ == '__main__':
+    PQ = HeapPriorityQueue()
+    PQ.add(3,'c')
+    PQ.add(1,'a')
+    PQ.add(2,'b')
+    PQ.add(4,'d')
+    PQ.remove_min()
+
