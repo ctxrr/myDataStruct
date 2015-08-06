@@ -1,6 +1,6 @@
 import sys
 sys.path.append('..')
-from ch7.SingleLinkedListAd import LinkedQueue
+from ch07.SingleLinkedListAd import LinkedQueue
 from abc import ABCMeta,abstractmethod
 
 class Tree(object):
