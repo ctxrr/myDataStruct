@@ -3,15 +3,14 @@
    For example: 'is_matched_html' 'is_matched_html_new' etc.
 """
 
-class Empty(Exception):
-    """Error attempting to access an element from an empty container"""
-    pass
+#------------Import packet-----------------------------------------------------------------------
+import sys
+sys.path.append('..')
+from Stack import Stack
+from tools.Exceptions import Empty,Full
 
-class Full(Exception):
-    """Error attempting to access an element from an full container"""
-    pass
-
-class ArrayStack:
+#------------Class Arraystack--------------------------------------------------------------
+class ArrayStack(Stack):
     """LIFO Stack implementation using a Python list as underlying storage"""
 
     def __init__(self,maxlen=None):
@@ -22,10 +21,6 @@ class ArrayStack:
     def __len__(self):
         """Return the number of elements in the stack."""
         return len(self._data)
-
-    def is_empty(self):
-        """Return True if the stack is empty"""
-        return len(self._data)==0
 
     def push(self,e):
         """Add element e to the top of the stack"""
@@ -50,7 +45,7 @@ class ArrayStack:
             raise Empty('Stack is empty')
         return self._data.pop()
 
-class ArrayStackStatic:
+class ArrayStackStatic(Stack):
     """LIFO Stack implementation using a Python list as underlying storage,but has a static lenth"""
 
     def __init__(self,n):
@@ -62,10 +57,6 @@ class ArrayStackStatic:
     def __len__(self):
         """Return the number of elements in the stack."""
         return self._n
-
-    def is_empty(self):
-        """Return True if the stack is empty"""
-        return self._top==0
 
     def push(self,e):
         """Add element e to the top of the stack"""
@@ -91,8 +82,9 @@ class ArrayStackStatic:
         self._top-=1
         return self._data[self._top]
 
+#------------Stand alone function--------------------------------------------------------------
 def is_matched_html(raw):
-    """Return True if all HTML tags are properly match; 
+    """Return True if all HTML tags are properly match;
        False otherwise.
     """
     S = ArrayStack()
@@ -113,7 +105,7 @@ def is_matched_html(raw):
     return S.is_empty()
 
 def is_matched_html_new(raw):
-    """Return True if all HTML tags are properly match; 
+    """Return True if all HTML tags are properly match;
        False otherwise.
        Much better than is_matched_html when there are attributes in opening tags
     """
@@ -163,10 +155,10 @@ def reverse_file(filename):
         output.write(S.pop() + '\n') # re-insert newline characters
     output.close()
 
-"""test code"""
-if __name__ == '__main__':    
-    #test on is_matched_html and is_matched_html_new
-    print 'test on is_matched_html and is_matched_html_new......'
+#------------Test code-------------------------------------------------------------------------
+if __name__ == '__main__':
+    #-----------test on is_matched_html and is_matched_html_new--------
+    print 'Test on is_matched_html & is_matched_html_new......'
     str_a="<body> \
     <center> \
     <h1> The Little Boat </h1> \
@@ -193,13 +185,16 @@ if __name__ == '__main__':
     print ''
     print is_matched_html_new(str_a)
     print is_matched_html_new(str_b)
-    print is_matched_html_new(str_c)  
-    print '-------------------------'
-    #test on is_matched
-    print 'test on is_matched......'
+    print is_matched_html_new(str_c)
+    print ''
+
+    #----------------test on is_matched-------------------------------
+    print 'Test on is_matched..............................'
     str_m='(abcd(e[])'
     str_n='(abcde[])'
     print is_matched(str_m)
     print is_matched(str_n)
     #test on reverse_file
     #reverse_file('a')
+    print ''
+

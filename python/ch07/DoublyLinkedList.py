@@ -6,10 +6,13 @@
        2.DoublyLinkedQueue
        3.DoublyLinkedDeque
 """
-#------------Class Empty--------------------------------------------------------------------------
-class Empty(Exception):
-    """Error attempting to access an element from an empty container"""
-    pass
+#------------Import packet-----------------------------------------------------------------------
+import sys
+sys.path.append('..')
+from ch06.Stack import Stack
+from ch06.Queue import Queue
+from ch06.Deque import Deque
+from tools.Exceptions import Empty
 
 #------------Class _DoublyLinkedBase--------------------------------------------------------------
 class _DoublyLinkedBase(object):
@@ -153,7 +156,7 @@ class _DoublyLinkedBase(object):
         p._prev = self._header
 
 #------------Subclass------------------------------------------------------------------------------
-class DoublyLinkedDeque(_DoublyLinkedBase): # note the use of inheritance
+class DoublyLinkedDeque(_DoublyLinkedBase,Deque): # note the use of inheritance
     """Double-ended queue implementation based on a doubly linked list."""
     def add_first(self, e):
         """Add an element to the front of the deque."""
@@ -183,7 +186,7 @@ class DoublyLinkedDeque(_DoublyLinkedBase): # note the use of inheritance
         print 'DoublyLinkedDeque',
         super(DoublyLinkedDeque,self).showinfo()
 
-class DoublyLinkedQueue(_DoublyLinkedBase): # note the use of inheritance
+class DoublyLinkedQueue(_DoublyLinkedBase,Queue): # note the use of inheritance
     """Single-ended queue implementation based on a doubly linked list."""
     def enqueue(self, e):
         """Add an element to the back of the queue."""
@@ -201,7 +204,7 @@ class DoublyLinkedQueue(_DoublyLinkedBase): # note the use of inheritance
         print 'DoublyLinkedQueue',
         super(DoublyLinkedQueue,self).showinfo()
 
-class DoublyLinkedStack(_DoublyLinkedBase): # note the use of inheritance
+class DoublyLinkedStack(_DoublyLinkedBase,Stack): # note the use of inheritance
     """Stack implementation based on a doubly linked list."""
     def pop(self, e):
         """Add an element to the front of the stack."""
@@ -214,6 +217,11 @@ class DoublyLinkedStack(_DoublyLinkedBase): # note the use of inheritance
         if self.is_empty():
             raise Empty("List is empty")
         return self._delete_node(self._header._next) # use inherited method
+
+    def top(self):
+        if self.is_empty():
+            raise Empty("List is empty")
+        return self.first()
 
     def showinfo(self):
         print 'DoublyLinkedStack',

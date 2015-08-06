@@ -1,10 +1,13 @@
 """This module contains a class named Empty and ArrayQueue"""
 
-class Empty(Exception):
-    """Error attempting to access an element from an empty container"""
-    pass
+#------------Import packet-----------------------------------------------------------------------
+import sys
+sys.path.append('..')
+from Queue import Queue
+from tools.Exceptions import Empty
 
-class ArrayQueue:
+#------------Class ArrayQueue--------------------------------------------------------------
+class ArrayQueue(Queue):
     """FIFO Queue implementation using a Python list as underlying storage"""
     QUEUESIZE=8
     def __init__(self):
@@ -27,7 +30,6 @@ class ArrayQueue:
             self._resize(2*len(self._data))
         self._data[self._index % len(self._data)]=e
         self._index+=1
-        # self._showlog()
 
     def first(self):
         """Return(but do not remove) the first element of the queue

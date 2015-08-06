@@ -196,6 +196,7 @@ if __name__ == '__main__':
     for i in a.top(3):
         print i,
     print ''
+    print ''
 
     #-------------------------- Test code for FavoriteslistMTF --------------------
     print "test for FavoritesListMTF......................"
@@ -208,6 +209,7 @@ if __name__ == '__main__':
     b.access('c')
     for i in b.top(3):
         print i,
+    print ''
     print ''
 
     #-----------R-7.20-----------------------------------------------------------------
@@ -233,6 +235,7 @@ if __name__ == '__main__':
 
     print 'new list:',
     m.showelement()
+    print ''
 
     #-----------R-7.21-----------------------------------------------------------------
     print "Test for R-7.21..............................."
@@ -249,6 +252,7 @@ if __name__ == '__main__':
 
     print 'new list:',
     n.showelement()
+    print ''
 
     #-----------R-7.22-----------------------------------------------------------------
     print "Test for R-7.22.............................."
@@ -259,6 +263,7 @@ if __name__ == '__main__':
     p.clear()
     print 'new list:',
     p.showelement()
+    print ''
 
     #-----------R-7.23-----------------------------------------------------------------
     print "Test for R-7.23.............................."
@@ -269,6 +274,7 @@ if __name__ == '__main__':
     q.reset_count()
     print 'new list:',
     q.showinfo()
+    print ''
 
     #-----------C-7.40-----------------------------------------------------------------
     print "Test for C-7.40.............................."
@@ -282,3 +288,5 @@ if __name__ == '__main__':
     mmm.showinfo()
     mmm.access(9)
     mmm.showinfo()
+    print ''
+

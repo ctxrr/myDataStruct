@@ -2,7 +2,10 @@
 """This module contain an advance ADT implemented by _DoublyLinkedBase
 """
 #------------Import packet-----------------------------------------------------------------------
-from DoublyLinkedList import _DoublyLinkedBase,Empty
+import sys
+sys.path.append('..')
+from DoublyLinkedList import _DoublyLinkedBase
+from tools.Exceptions import Empty
 
 #------------Class PositionalList----------------------------------------------------------------
 class PositionalList(_DoublyLinkedBase):
@@ -158,8 +161,8 @@ class PositionalList(_DoublyLinkedBase):
             else : walk=self.after(walk)
         print 'find nothing'
         return None
-#------------Stand alone function----------------------------------------------------------------
 
+#------------Stand alone function----------------------------------------------------------------
 def insertion_sort(L):
     """Sort PositionalList of comparable elements into nondecreasing order."""
     if len(L) > 1: # otherwise, no need to sort it
@@ -217,6 +220,7 @@ if __name__ == '__main__':
     a.add_first(96)
     a.add_last(100)
     a.showinfo()
+    print ''
 
     #-------------------------- Test code for insertion_sort --------------------------
     print "Test for PositionalList.........................."
@@ -224,22 +228,26 @@ if __name__ == '__main__':
     m=copy.deepcopy(a)
     insertion_sort(m)
     m.showinfo()
+    print ''
 
     #-----------R-7.11----------------------------------------------------------------
     print "Test for R-7.11................................"
     print 'find max element (use function)is:',
     max(a)
+    print ''
 
     #-----------R-7.12----------------------------------------------------------------
     print "Test for R-7.12................................"
     print "find max element (use class method)is:",
     a.max()
+    print ''
 
     #-----------R-7.13----------------------------------------------------------------
     print "Test for R-7.13................................"
     print "test result of method find:"
     a.find(96)
     a.find(98)
+    print ''
 
     #-----------R-7.14----------------------------------------------------------------
     print "Test for R-7.14................................"
@@ -251,6 +259,8 @@ if __name__ == '__main__':
     ret=max_re(j,2,a)
     print ret
     a.showinfo()
+    print ''
+
     #-----------R-7.15----------------------------------------------------------------
     print "Test for R-7.15................................"
     print "forward iter:",
@@ -261,6 +271,8 @@ if __name__ == '__main__':
     for i in reversed(a):
         print i,
     print ''
+    print ''
+
     #-----------R-7.17----------------------------------------------------------------
     print "Test for R-7.17................................"
     n=copy.deepcopy(a)
@@ -270,6 +282,7 @@ if __name__ == '__main__':
     print 'move the last element to front...'
     print 'new list:',
     n.showinfo()
+    print ''
 
     #-----------C-7.34----------------------------------------------------------------
     print "Test for C-7.34................................"
@@ -285,6 +298,8 @@ if __name__ == '__main__':
     for i in reversed(sw):
         print i,
     print ''
+    print ''
+
     #-----------C-7.35----------------------------------------------------------------
     print "Test for C-7.35................................"
     class PositionalListA(PositionalList):
@@ -315,6 +330,7 @@ if __name__ == '__main__':
         print i,
     print ''
     pla.showinfo()
+    print ''
 
     #-----------C-7.36----------------------------------------------------------------
     print "Test for C-7.36................................"
@@ -349,6 +365,7 @@ if __name__ == '__main__':
             return None
     # test code
     print findSum(si,15)
+    print ''
 
     #-----------P-7.77----------------------------------------------------------------
     print "Test for P-7.44................................"
@@ -409,3 +426,5 @@ if __name__ == '__main__':
     teditor.insert('e')
     teditor.delete()
     teditor.showinfo()
+    print ''
+

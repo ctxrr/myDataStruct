@@ -18,10 +18,13 @@
        But there is some problem in the implementation of CircularQueue ADT,so you have to use the
        traditional head-tail model to implement it!
 """
-#------------Class Empty--------------------------------------------------------------------------
-class Empty(Exception):
-    """Error attempting to access an element from an empty container"""
-    pass
+#------------Import packet-----------------------------------------------------------------------
+import sys
+sys.path.append('..')
+from ch06.Stack import Stack
+from ch06.Queue import Queue
+from ch06.Deque import Deque
+from tools.Exceptions import Empty
 
 #------------Class _SingleLinkedBase--------------------------------------------------------------
 class _SingleLinkedBase(object):
@@ -51,7 +54,6 @@ class _SingleLinkedBase(object):
     def __iter__(self):
         """Generate a forward iteration of the elements of the list."""
         ptr = self._header._next
-        # while ptr._next != None:
         while ptr != self._trailer:
             yield ptr._element
             ptr = ptr._next
@@ -168,7 +170,7 @@ def reverse_recur(walk,slist):
     walk._next=slist._trailer
 
 #------------Subclass------------------------------------------------------------------------------
-class LinkedStack(_SingleLinkedBase):
+class LinkedStack(_SingleLinkedBase,Stack):
     """LIFO Stack implementation based on a singly linked list."""
 
     def push(self, e):
@@ -191,7 +193,7 @@ class LinkedStack(_SingleLinkedBase):
         print 'LinkedStack',
         super(LinkedStack,self).showinfo()
 
-class LinkedQueue(_SingleLinkedBase):
+class LinkedQueue(_SingleLinkedBase,Queue):
     """FIFO queue implementation based on a singly linked list."""
 
     def dequeue(self):

@@ -9,10 +9,13 @@
    ### _SingleLinkedList is implemented in head-tail model,I re-implement a
        new _SingleLinkedBase in SingleLinkedListAd.py
 """
-#------------Class Empty--------------------------------------------------------------------------
-class Empty(Exception):
-    """Error attempting to access an element from an empty container"""
-    pass
+#------------Import packet-----------------------------------------------------------------------
+import sys
+sys.path.append('..')
+from ch06.Stack import Stack
+from ch06.Queue import Queue
+from ch06.Deque import Deque
+from tools.Exceptions import Empty,Full
 
 #------------Class _SingleLinkedBase--------------------------------------------------------------
 class _SingleLinkedList(object):
@@ -50,25 +53,8 @@ class _SingleLinkedList(object):
             print start._element,
             start=start._next
         print "]"
-#------------Stand alone function-----------------------------------------------------------------
-def reverse_iter(slist):
-    """Reverse a single list iteratively
-       p and q are used for reverse;
-       r is used for record the rest of the list
-    """
-    slist._tail=slist._head
-    p=slist._head
-    q=p._next
-    p._next=None
-    while q != None:
-        r=q._next
-        q._next=p #reverse the _next pointer
-        p=q
-        q=r
-    slist._head=p
-
-#------------Subclass------------------------------------------------------------------------------
-class LinkedStack(_SingleLinkedList):
+#------------Subclass LinkStack-------------------------------------------------------------------
+class LinkedStack(_SingleLinkedList,Stack):
     """LIFO Stack implementation based on a singly linked list."""
 
     def push(self, e):
@@ -100,7 +86,8 @@ class LinkedStack(_SingleLinkedList):
         print 'LinkedStack',
         super(LinkedStack,self).showinfo()
 
-class LinkedQueue(_SingleLinkedList):
+#------------Subclass LinkedQueue-------------------------------------------------------------------
+class LinkedQueue(_SingleLinkedList,Queue):
     """FIFO queue implementation based on a singly linked list."""
 
     def first(self):
@@ -185,6 +172,22 @@ class CircularQueue(_SingleLinkedList):
         print 'CircularQueue',
         super(CircularQueue,self).showinfo()
 
+#------------Stand alone function-----------------------------------------------------------------
+def reverse_iter(slist):
+    """Reverse a single list iteratively
+       p and q are used for reverse;
+       r is used for record the rest of the list
+    """
+    slist._tail=slist._head
+    p=slist._head
+    q=p._next
+    p._next=None
+    while q != None:
+        r=q._next
+        q._next=p #reverse the _next pointer
+        p=q
+        q=r
+    slist._head=p
 
 #------------Test code-------------------------------------------------------------------------
 if __name__ == '__main__':
