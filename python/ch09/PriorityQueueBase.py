@@ -8,7 +8,7 @@ class PriorityQueueBase(object):
     """Abstract base class for a priority queue."""
 
     #------------------------------ nested _Item class ------------------------------
-    class _Item:
+    class _Item(object):
         """Lightweight composite to store priority queue items."""
         __slots__ = '_key', '_value'
 

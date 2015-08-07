@@ -30,7 +30,6 @@ class HeapPriorityQueue(PriorityQueueBase): # base class defines _Item
         self._data[i], self._data[j] = self._data[j], self._data[i]
 
     def _upheap(self, j):
-        #self.showinfo()
         parent = self._parent(j)
         if j > 0 and self._data[j] < self._data[parent]:
             self._swap(j, parent)
@@ -61,7 +60,6 @@ class HeapPriorityQueue(PriorityQueueBase): # base class defines _Item
         """Add a key-value pair to the priority queue."""
         self._data.append(self._Item(key, value))
         self._upheap(len(self._data) - 1)            # upheap newly added position
-        self.showinfo()
 
     def min(self):
         """Return but do not remove (k,v) tuple with minimum key.
@@ -84,6 +82,7 @@ class HeapPriorityQueue(PriorityQueueBase): # base class defines _Item
         item = self._data.pop()                      # and remove it from the list;
         self._downheap(0)                            # then fix new root
         return (item._key, item._value)
+
     def showinfo(self):
         print '[',
         for i in self._data:
@@ -107,8 +106,80 @@ class BottomUpHeap(HeapPriorityQueue): # base class defines _Item
         for j in range(start, -1, -1): # going to and including the root
             self._downheap(j)
 
+#------------Class MaxOrientHeap --------------------------------------------------------------
+class MaxOrientHeap(HeapPriorityQueue): # base class defines _Item
+    """A max-oriented priority queue implemented with a binary heap.
+         1.MaxOrientHeap is inherrited from HeapPriorityQueue,but modify the
+           method of _upheap and _downheap.
+         2.The old method min and remove_min will inherrited from super class
+           but it should not exist in MaxOrientHeap class so any call of them
+           will raise an NotImplementedError
+         3.Add 2 new method:max and remove_max which almost work the same as
+           min and remove_min
+    """
+
+    def _upheap(self, j):
+        parent = self._parent(j)
+        if j > 0 and self._data[j] > self._data[parent]:
+            self._swap(j, parent)
+            self._upheap(parent)             # recur at position of parent
+
+    def _downheap(self, j):
+        if self._has_left(j):
+            left = self._left(j)
+            small_child = left               # although right may be smaller
+            if self._has_right(j):
+                right = self._right(j)
+                if self._data[right] > self._data[left]:
+                    small_child = right
+            if self._data[small_child] > self._data[j]:
+                self._swap(j, small_child)
+                self._downheap(small_child)    # recur at position of small child
+
+
+    def max(self):
+        """Return but do not remove (k,v) tuple with maximum key.
+
+        Raise Empty exception if empty.
+        """
+        if self.is_empty():
+            raise Empty('Priority queue is empty.')
+        item = self._data[0]
+        return (item._key, item._value)
+
+    def remove_max(self):
+        """Remove and return (k,v) tuple with maximum key.
+
+        Raise Empty exception if empty.
+        """
+        if self.is_empty():
+            raise Empty('Priority queue is empty.')
+        self._swap(0, len(self._data) - 1)           # put maximum item at the end
+        item = self._data.pop()                      # and remove it from the list;
+        self._downheap(0)                            # then fix new root
+        return (item._key, item._value)
+
+    def min(self):
+        raise NotImplementedError('Not support in this class any more')
+
+    def remove_min(self):
+        raise NotImplementedError('Not support in this class any more')
+
+#------------Stand alone function--------------------------------------------------------------
+def pq_sort(C):
+    """Sort a collection of elements stored in a positional list."""
+    n = len(C)
+    P = HeapPriorityQueue()
+    for j in range(n):
+        element = C.delete(C.first())
+        P.add(element, element) # use element as key and value
+    for j in range(n):
+        (k,v) = P.remove_min()
+        C.add_last(v) # store smallest remaining element in C
+
 #------------ Test code--------------------------------------------------------------
 if __name__ == '__main__':
+    #-------------------------- Prepare Priority Queue-----------------------
     # init priority queue
     PQ = HeapPriorityQueue()
     PQ.add(33,'c')
@@ -116,6 +187,7 @@ if __name__ == '__main__':
     PQ.add(2,'b')
     PQ.add(4,'d')
     PQ.add(14,'c')
+    #PQ.showinfo()
 
     PQ1 = BottomUpHeap()
     PQ1.add(33,'c')
@@ -123,4 +195,29 @@ if __name__ == '__main__':
     PQ1.add(2,'b')
     PQ1.add(4,'d')
     PQ1.add(14,'c')
+    #PQ1.showinfo()
+
+    PQ2 = MaxOrientHeap()
+    PQ2.add(33,'c')
+    PQ2.add(11,'a')
+    PQ2.add(2,'b')
+    PQ2.add(4,'d')
+    PQ2.add(14,'c')
+    #PQ2.showinfo()
+
+    #-------------------------- Test code for function pq_sort --------------------
+    print "Test for function pq_sort.........................."
+    from ch07.PositionalList import PositionalList
+    a = PositionalList()
+    a.add_first(7)
+    a.add_first(2)
+    a.add_first(9)
+    a.add_first(5)
+    a.add_first(4)
+    print 'Before:',
+    a.showinfo()
+    pq_sort(a)
+    print 'After:',
+    a.showinfo()
+    print ''
 

@@ -1,5 +1,8 @@
-from .heap_priority_queue import HeapPriorityQueue
 
+#------------Import packet-----------------------------------------------------------------------
+from HeapPriorityQueue import HeapPriorityQueue
+
+#------------Class AdaptableHeapPriorityQueue--------------------------------------------------
 class AdaptableHeapPriorityQueue(HeapPriorityQueue):
     """A locator-based priority queue implemented with a binary heap."""
 
@@ -8,14 +11,14 @@ class AdaptableHeapPriorityQueue(HeapPriorityQueue):
         """Token for locating an entry of the priority queue."""
         __slots__ = '_index'                 # add index as additional field
 
-    def __init__(self, k, v, j):
-        super().__init__(k,v)
-        self._index = j
+        def __init__(self, k, v, j):
+            super(AdaptableHeapPriorityQueue.Locator,self).__init__(k,v)
+            self._index = j
 
     #------------------------------ nonpublic behaviors ------------------------------
     # override swap to record new indices
     def _swap(self, i, j):
-        super()._swap(i,j)                   # perform the swap
+        super(AdaptableHeapPriorityQueue,self)._swap(i,j)                   # perform the swap
         self._data[i]._index = i             # reset locator index (post-swap)
         self._data[j]._index = j             # reset locator index (post-swap)
 
@@ -54,3 +57,22 @@ class AdaptableHeapPriorityQueue(HeapPriorityQueue):
             self._data.pop()                    # remove it from the list
             self._bubble(j)                     # fix item displaced by the swap
         return (loc._key, loc._value)
+
+#------------ Test code--------------------------------------------------------------
+if __name__ == '__main__':
+    #-------------------------- Prepare Priority Queue-----------------------
+    PQ = AdaptableHeapPriorityQueue()
+    key1 = PQ.add(3,'a')
+    key2 = PQ.add(2,'b')
+    key3 = PQ.add(8,'c')
+    key4 = PQ.add(1,'d')
+    key5 = PQ.add(4,'e')
+    # for debug
+    #PQ.showinfo()
+    #PQ.update(key3,9,'g')
+    #PQ.showinfo()
+    #PQ.remove(key3)
+    #PQ.showinfo()
+    print ''
+
+
