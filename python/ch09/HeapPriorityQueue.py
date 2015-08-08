@@ -267,3 +267,69 @@ if __name__ == '__main__':
        u.(2, 4, 5, 10, 15, 16, 18, 23, 26, 39).
     """
 
+    #-----------C9.26---------------------------------------------------------------
+    print "Test for C-9.26................................"
+    # definition of class
+    class UseHeapAsStack():
+        def __init__(self):
+            self._index = 0
+            self._data = HeapPriorityQueue()
+
+        def __len__(self):
+            return len(self._data)
+
+        def top(self):
+            return self._data.min()[1]
+
+        def push(self,e):
+            self._data.add(self._index,e)
+            self._index -= 1
+
+        def pop(self):
+            return self._data.remove_min()[1]
+    # test code
+    pq26 = UseHeapAsStack()
+    pq26.push(1)
+    pq26.push(2)
+    pq26.push(3)
+    print 'top is:',
+    print pq26.top()
+    print pq26.pop(),
+    print pq26.pop(),
+    print pq26.pop(),
+    print ''
+    print ''
+
+    #-----------C9.27---------------------------------------------------------------
+    print "Test for C-9.27................................"
+    # definition of class
+    class UseHeapAsQueue():
+        def __init__(self):
+            self._index = 0
+            self._data = HeapPriorityQueue()
+
+        def __len__(self):
+            return len(self._data)
+
+        def top(self):
+            return self._data.min()[1]
+
+        def enqueue(self,e):
+            self._data.add(self._index,e)
+            self._index += 1
+
+        def dequeue(self):
+            return self._data.remove_min()[1]
+    # test code
+    pq27 = UseHeapAsQueue()
+    pq27.enqueue(1)
+    pq27.enqueue(2)
+    pq27.enqueue(3)
+    print 'top is:',
+    print pq27.top()
+    print pq27.dequeue(),
+    print pq27.dequeue(),
+    print pq27.dequeue(),
+    print ''
+    print ''
+
