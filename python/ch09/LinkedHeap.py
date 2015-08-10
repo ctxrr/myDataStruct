@@ -2,70 +2,104 @@
 #------------Import packet-----------------------------------------------------------------------
 import sys
 sys.path.append('..')
-from ch08.LinkedBinaryTree import LinkedBinaryTree
+from LinkedCompleteBinaryTree import LinkedCompleteBinaryTree
+from tools.Exceptions import Empty
 
-class LinkedCompleteBinaryTree(LinkedBinaryTree):
-    def __init__(self):
-        super(LinkedCompleteBinaryTree,self).__init__()
-        self._last = None
+#------------Class LinkedHeap--------------------------------------------------------------
+class LinkedHeap(LinkedCompleteBinaryTree):
 
-    def add_root(self, e):
-        """Add root node"""
-        raise NotImplementedError('Do not support such operation')
+    def add(self,k,v):
+        super(LinkedHeap,self).add((k,v))
+        self._upheap(self._last)
 
-    def add_left(self, p, e):
-        """Add left child"""
-        raise NotImplementedError('Do not support such operation')
+    def min(self):
+        """Return but do not remove (k,v) tuple with minimum key.
 
-    def add_right(self, p, e):
-        """Add right child"""
-        raise NotImplementedError('Do not support such operation')
+        Raise Empty exception if empty.
+        """
+        if self.is_empty():
+            raise Empty('Priority queue is empty.')
+        return self.root().element()[1]
 
-    def add(self,e):
-        if self._last == None:
-            self._last = self._add_root(e)
-        else:
-            return self._add_next(self._last,e)
+    def remove_min(self):
+        """Remove and return (k,v) tuple with minimum key.
 
-    def _add_next(self,p,e):
-        if p == self.root():
-            self._last = self._add_left(p,e)
-        else:
-            walk = p
-            while walk != self.left(self.parent(walk)):
-                walk = self.parent(walk)
-                if walk == self.root():
-                    while self.left(walk) != None:
-                        walk = self.left(walk)
-                    self._last = self._add_left(walk,e)
-                    return
-            if self.sibling(walk) == None:
-                self.addsibling(walk,e)
+        Raise Empty exception if empty.
+        """
+        if self.is_empty():
+            raise Empty('Priority queue is empty.')
+        self._swap(self._last,self.root())
+        self.remove_last()
+        self._downheap(self.root())                            # then fix new root
+
+
+    def _upheap(self,p):
+        parent = self.parent(p)
+        if parent and p._node._element[0]<parent._node._element[0]:
+            self._swap(p, parent)
+            self._upheap(parent)             # recur at position of parent
+
+    def _swap(self, p, q):
+        """Swap the elements at position p and q."""
+        p._node._element,q._node._element = q._node._element,p._node._element
+
+    def _downheap(self, p):
+        if p:
+            left = self.left(p)               # although right may be smaller
+            right = self.right(p)
+            if left:
+                small_child = left               # although right may be smaller
+                if right:
+                    if right._node._element[0] < left._node._element[0]:
+                        small_child = right
+                if small_child._node._element[0] < p._node._element[0]:
+                    self._swap(p, small_child)
+                    self._downheap(small_child)    # recur at position of small child
+
+
+    def _upheap_nonrec(self, j):
+        """non-public method which can upheap in nonrecursive way"""
+        while j > 0:
+            parent = self._parent(j)
+            if self._data[j] < self._data[parent]:
+                self._swap(j, parent)
+                j = parent
             else:
-                walk = self.sibling(walk)
-                while self.left(walk) != None:
-                    walk = self.left(walk)
-                self._last = self._add_left(walk,e)
+                break
 
-    def last(self):
-        return self._last.element()
+    def _downheap_nonrec(self, j):
+        """non-public method which can downheap in nonrecursive way"""
+        while self._has_left(j):
+            left = self._left(j)
+            small_child = left               # although right may be smaller
+            if self._has_right(j):
+                right = self._right(j)
+                if self._data[right] < self._data[left]:
+                    small_child = right
+            if self._data[small_child] < self._data[j]:
+                self._swap(j, small_child)
+                j = small_child
+            else:
+                break
 
+
+#------------ Test code--------------------------------------------------------------
 if __name__ == '__main__':
-    t = LinkedCompleteBinaryTree()
-    t.add(1)
-    t.add(2)
-    t.add(3)
-    t.add(4)
-    t.add(5)
-    t.add(6)
-    t.add(7)
-    t.add(8)
-    t.add(9)
-    t.add(10)
-    t.add(11)
-    t.add(12)
-    t.add(13)
-    t.add(14)
-    t.breadthfirsttraversal()
-    print t.last()
-
+    m = LinkedHeap()
+    m.add(1,'a')
+    m.add(2,'b')
+    m.add(3,'c')
+    m.add(-1,'d')
+    print m.min()
+    m.remove_min()
+    m.breadthfirsttraversal()
+    m.add(9,'a')
+    m.breadthfirsttraversal()
+    m.remove_min()
+    m.breadthfirsttraversal()
+    m.remove_min()
+    m.breadthfirsttraversal()
+    m.remove_min()
+    m.breadthfirsttraversal()
+    m.remove_min()
+    m.breadthfirsttraversal()
