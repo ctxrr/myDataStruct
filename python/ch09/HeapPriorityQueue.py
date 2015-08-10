@@ -47,6 +47,31 @@ class HeapPriorityQueue(PriorityQueueBase): # base class defines _Item
                 self._swap(j, small_child)
                 self._downheap(small_child)    # recur at position of small child
 
+    def _upheap_nonrec(self, j):
+        """non-public method which can upheap in nonrecursive way"""
+        while j > 0:
+            parent = self._parent(j)
+            if self._data[j] < self._data[parent]:
+                self._swap(j, parent)
+                j = parent
+            else:
+                break
+
+    def _downheap_nonrec(self, j):
+        """non-public method which can downheap in nonrecursive way"""
+        while self._has_left(j):
+            left = self._left(j)
+            small_child = left               # although right may be smaller
+            if self._has_right(j):
+                right = self._right(j)
+                if self._data[right] < self._data[left]:
+                    small_child = right
+            if self._data[small_child] < self._data[j]:
+                self._swap(j, small_child)
+                j = small_child
+            else:
+                break
+
     #------------------------------ public behaviors ------------------------------
     def __init__(self):
         """Create a new empty Priority Queue."""
@@ -267,7 +292,7 @@ if __name__ == '__main__':
        u.(2, 4, 5, 10, 15, 16, 18, 23, 26, 39).
     """
 
-    #-----------C9.26---------------------------------------------------------------
+    #-----------C-9.26---------------------------------------------------------------
     print "Test for C-9.26................................"
     # definition of class
     class UseHeapAsStack():
@@ -300,7 +325,7 @@ if __name__ == '__main__':
     print ''
     print ''
 
-    #-----------C9.27---------------------------------------------------------------
+    #-----------C-9.27---------------------------------------------------------------
     print "Test for C-9.27................................"
     # definition of class
     class UseHeapAsQueue():
@@ -332,4 +357,44 @@ if __name__ == '__main__':
     print pq27.dequeue(),
     print ''
     print ''
+
+    #-----------C-9.30 9.31---------------------------------------------------------------
+    print "Test for C-9.30 9.31................................"
+    # definition of class
+    class HeapPriorityQueueRec(HeapPriorityQueue):
+        """A subclass of HeapPriorityQueue but re-implement _upheap and _downheap in
+           nonrecursive way.
+        """
+        # re-implement add and remove_min method to use nonrecursive method
+        def add(self, key, value):
+            """Add a key-value pair to the priority queue."""
+            self._data.append(self._Item(key, value))
+            self._upheap_nonrec(len(self._data) - 1)            # upheap newly added position
+
+        def remove_min(self):
+            """Remove and return (k,v) tuple with minimum key.
+
+            Raise Empty exception if empty.
+            """
+            if self.is_empty():
+                raise Empty('Priority queue is empty.')
+            self._swap(0, len(self._data) - 1)           # put minimum item at the end
+            item = self._data.pop()                      # and remove it from the list;
+            self._downheap_nonrec(0)                            # then fix new root
+            return (item._key, item._value)
+
+    # test code
+    pq29 = HeapPriorityQueueRec()
+    pq29.add(33,'c')
+    pq29.add(11,'a')
+    pq29.add(2,'b')
+    pq29.add(4,'d')
+    pq29.add(14,'c')
+    pq29.remove_min()
+    pq29.showinfo()
+    pq29.add(1,'c')
+    pq29.showinfo()
+    print ''
+
+
 
