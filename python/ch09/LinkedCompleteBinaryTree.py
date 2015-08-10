@@ -3,12 +3,20 @@
 import sys
 sys.path.append('..')
 from ch08.LinkedBinaryTree import LinkedBinaryTree
+from tools.Exceptions import Empty
 
 #------------Class LinkedCompleteBinaryTree--------------------------------------------------------------
 class LinkedCompleteBinaryTree(LinkedBinaryTree):
-    def __init__(self):
-        super(LinkedCompleteBinaryTree,self).__init__()
-        self._last = None
+    """Linked representation of a complete binary tree structure.
+
+       1.Unlike BinaryTree,complete binary tree ADT do not support
+         method such as add_root add_left etc. Any call of them will
+         raise an NotImplementedError
+       2.Instead , LinkedCompleteBinaryTree support 3 new method:
+         @'add':to add it to the end of the tree.
+         @'remove_last':is the reverse operation of 'add'
+         @'last':return the last node in the tree
+    """
 
     def add_root(self, e):
         """Add root node"""
@@ -22,13 +30,20 @@ class LinkedCompleteBinaryTree(LinkedBinaryTree):
         """Add right child"""
         raise NotImplementedError('Do not support such operation')
 
+    #-------------------------- public method --------------------------
+    def __init__(self):
+        super(LinkedCompleteBinaryTree,self).__init__()
+        self._last = None
+
     def add(self,e):
+        """Add an new node to the end of the tree"""
         if self._last == None:
             self._last = self._add_root(e)
         else:
             return self._add_next(self._last,e)
 
     def remove_last(self):
+        """Remove the node at the end of the tree"""
         old = self._last
         if self._last == self.root():
             self._last = None
@@ -36,6 +51,13 @@ class LinkedCompleteBinaryTree(LinkedBinaryTree):
             self._delete_front(self._last)
         self.delete(old)
 
+    def last(self):
+        """Return the last node at the tree"""
+        if self.is_empty():
+            raise Empty('Priority queue is empty.')
+        return self._last.element()
+
+    #-------------------------- nonpublic mutators --------------------------
     def _add_next(self,p,e):
         if p == self.root():
             self._last = self._add_left(p,e)
@@ -73,9 +95,6 @@ class LinkedCompleteBinaryTree(LinkedBinaryTree):
             while self.right(walk) != None:
                 walk = self.right(walk)
             self._last = walk
-
-    def last(self):
-        return self._last.element()
 
 #------------ Test code--------------------------------------------------------------
 if __name__ == '__main__':

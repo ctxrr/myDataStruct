@@ -7,8 +7,11 @@ from tools.Exceptions import Empty
 
 #------------Class LinkedHeap--------------------------------------------------------------
 class LinkedHeap(LinkedCompleteBinaryTree):
+    """A min-oriented priority queue implemented with a linked-based binary heap."""
 
+    #-------------------------- public method --------------------------
     def add(self,k,v):
+        """Add a key-value pair to the priority queue."""
         super(LinkedHeap,self).add((k,v))
         self._upheap(self._last)
 
@@ -32,16 +35,16 @@ class LinkedHeap(LinkedCompleteBinaryTree):
         self.remove_last()
         self._downheap(self.root())                            # then fix new root
 
+    #-------------------------- nonpublic mutators --------------------------
+    def _swap(self, p, q):
+        """Swap the elements at position p and q."""
+        p._node._element,q._node._element = q._node._element,p._node._element
 
     def _upheap(self,p):
         parent = self.parent(p)
         if parent and p._node._element[0]<parent._node._element[0]:
             self._swap(p, parent)
             self._upheap(parent)             # recur at position of parent
-
-    def _swap(self, p, q):
-        """Swap the elements at position p and q."""
-        p._node._element,q._node._element = q._node._element,p._node._element
 
     def _downheap(self, p):
         if p:
@@ -56,50 +59,28 @@ class LinkedHeap(LinkedCompleteBinaryTree):
                     self._swap(p, small_child)
                     self._downheap(small_child)    # recur at position of small child
 
-
-    def _upheap_nonrec(self, j):
-        """non-public method which can upheap in nonrecursive way"""
-        while j > 0:
-            parent = self._parent(j)
-            if self._data[j] < self._data[parent]:
-                self._swap(j, parent)
-                j = parent
-            else:
-                break
-
-    def _downheap_nonrec(self, j):
-        """non-public method which can downheap in nonrecursive way"""
-        while self._has_left(j):
-            left = self._left(j)
-            small_child = left               # although right may be smaller
-            if self._has_right(j):
-                right = self._right(j)
-                if self._data[right] < self._data[left]:
-                    small_child = right
-            if self._data[small_child] < self._data[j]:
-                self._swap(j, small_child)
-                j = small_child
-            else:
-                break
-
-
 #------------ Test code--------------------------------------------------------------
 if __name__ == '__main__':
-    m = LinkedHeap()
-    m.add(1,'a')
-    m.add(2,'b')
-    m.add(3,'c')
-    m.add(-1,'d')
-    print m.min()
-    m.remove_min()
-    m.breadthfirsttraversal()
-    m.add(9,'a')
-    m.breadthfirsttraversal()
-    m.remove_min()
-    m.breadthfirsttraversal()
-    m.remove_min()
-    m.breadthfirsttraversal()
-    m.remove_min()
-    m.breadthfirsttraversal()
-    m.remove_min()
-    m.breadthfirsttraversal()
+    #-------------------------- Prepare Priority Queue-----------------------
+    PQ = LinkedHeap()
+    PQ.add(1,'a')
+    PQ.add(2,'b')
+    PQ.add(3,'c')
+    PQ.add(-1,'d')
+    print ''
+
+    #-----------C-9.32---------------------------------------------------------------
+    print "Test for C-9.32................................"
+    PQ.remove_min()
+    PQ.breadthfirsttraversal()
+    PQ.add(9,'a')
+    PQ.breadthfirsttraversal()
+    PQ.remove_min()
+    PQ.breadthfirsttraversal()
+    PQ.remove_min()
+    PQ.breadthfirsttraversal()
+    PQ.remove_min()
+    PQ.breadthfirsttraversal()
+    print ''
+
+
