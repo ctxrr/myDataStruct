@@ -108,6 +108,21 @@ class HeapPriorityQueue(PriorityQueueBase): # base class defines _Item
         self._downheap(0)                            # then fix new root
         return (item._key, item._value)
 
+    def heappushpop(self,k,v):
+        if self._data[0]._key >= k:
+            return (k,v)
+        else:
+            old = self._data[0]
+            self._data[0] = self._Item(k,v)
+            self._downheap(0)                            # then fix new root
+            return (old._key, old._value)
+
+    def heapreplace(self,k,v):
+        old = self._data[0]
+        self._data[0] = self._Item(k,v)
+        self._downheap(0)                            # then fix new root
+        return (old._key, old._value)
+
     def showinfo(self):
         print '[',
         for i in self._data:
@@ -161,7 +176,6 @@ class MaxOrientHeap(HeapPriorityQueue): # base class defines _Item
                 self._swap(j, small_child)
                 self._downheap(small_child)    # recur at position of small child
 
-
     def max(self):
         """Return but do not remove (k,v) tuple with maximum key.
 
@@ -204,6 +218,9 @@ def pq_sort(C):
 
 #------------ Test code--------------------------------------------------------------
 if __name__ == '__main__':
+    #-------------------------- Import -------------- -----------------------
+    from copy import deepcopy
+
     #-------------------------- Prepare Priority Queue-----------------------
     # init priority queue
     PQ = HeapPriorityQueue()
@@ -211,16 +228,21 @@ if __name__ == '__main__':
     PQ.add(11,'a')
     PQ.add(2,'b')
     PQ.add(4,'d')
-    PQ.add(14,'c')
+    PQ.add(5,'c')
+    PQ.add(18,'c')
+    PQ.add(24,'c')
+    PQ.add(-1,'c')
     #PQ.showinfo()
 
-    PQ1 = BottomUpHeap()
-    PQ1.add(33,'c')
-    PQ1.add(11,'a')
-    PQ1.add(2,'b')
-    PQ1.add(4,'d')
-    PQ1.add(14,'c')
-    #PQ1.showinfo()
+    PQ1 = []
+    PQ1.append((33,'c'))
+    PQ1.append((11,'a'))
+    PQ1.append((2,'b'))
+    PQ1.append((4,'d'))
+    PQ1.append((14,'f'))
+    print PQ1
+    PQ3 = BottomUpHeap(PQ1)
+    PQ3.showinfo()
 
     PQ2 = MaxOrientHeap()
     PQ2.add(33,'c')
@@ -396,5 +418,28 @@ if __name__ == '__main__':
     pq29.showinfo()
     print ''
 
+    #-----------C-9.35---------------------------------------------------------------
+    print "Test for C-9.35................................"
+    # definition of compute function
+    def compute(pq,j,key):
+        if j < len(pq._data) and pq._data[j]._key < key :
+            return 1+compute(pq,pq._left(j),key)+compute(pq,pq._right(j),key)
+        else:
+            return 0
 
+    pq35 = deepcopy(PQ)
+    pq35.showinfo()
+    print 'The number of entries is:',
+    print compute(pq35,0,8)
+    print ''
 
+    #-----------C-9.39 9.40---------------------------------------------------------------
+    print "Test for C-9.39 9.40................................"
+    pq39 = deepcopy(PQ)
+    pq39.showinfo()
+    print pq39.heappushpop(-2,'m')
+    pq39.showinfo()
+    print pq39.heappushpop(8,'j')
+    pq39.showinfo()
+    print pq39.heapreplace(1,'z')
+    pq39.showinfo()
