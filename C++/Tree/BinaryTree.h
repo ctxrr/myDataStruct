@@ -15,12 +15,6 @@
 #include <iostream>
 #include "Tree.h"
 
-/* Exported macro ------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-/* Exported types ------------------------------------------------------------*/
-/* Exported constants --------------------------------------------------------*/
-/* Exported functions ------------------------------------------------------- */
-/* Class delcaration ---------------------------------------------------------*/
 /* Template definition -------------------------------------------------------*/
 
 template<typename T>
@@ -37,10 +31,10 @@ class BinaryTree : public Tree<T>
     public:
         BTNode<T> *root;
         BinaryTree();
-        void add_root(const T &item);
-        ////Node add_left(const Node & n,const T &item);
-        //Node root();
-        //Node left(const Node n);
+        BTNode<T> *add_root(const T &item);
+        BTNode<T> *add_left(BTNode<T> *n,const T &item);
+        BTNode<T> *add_right(BTNode<T> *n,const T &item);
+        void preorder(BTNode<T> *root);
 };
 
 template<typename T>
@@ -50,7 +44,8 @@ BinaryTree<T>::BinaryTree()
 }
 
 template<typename T>
-void BinaryTree<T>::add_root(const T &item)
+BTNode<T> *
+BinaryTree<T>::add_root(const T &item)
 {
      if(this->size==0)
      {
@@ -59,6 +54,49 @@ void BinaryTree<T>::add_root(const T &item)
      }
      else
          std::cout<<"Already has root!"<<std::endl;
+     return root;
+}
+
+template<typename T>
+BTNode<T> *
+BinaryTree<T>::add_left(BTNode<T> *n,const T &item)
+{
+    if(n->left)
+         std::cout<<"Already has left!"<<std::endl;
+    else
+    {
+        auto node = new BTNode<T>(item,n);
+        n->left = node;
+        this->size++;
+    }
+    return n->left;
+}
+
+template<typename T>
+BTNode<T> *
+BinaryTree<T>::add_right(BTNode<T> *n,const T &item)
+{
+    if(n->right)
+         std::cout<<"Already has right!"<<std::endl;
+    else
+    {
+        auto node = new BTNode<T>(item,n);
+        n->right = node;
+        this->size++;
+    }
+    return n->right;
+}
+
+template<typename T>
+void
+BinaryTree<T>::preorder(BTNode<T> *root)
+{
+    std::cout<<root->element;
+    if(root->left)
+        preorder(root->left);
+    if(root->right)
+        preorder(root->right);
 }
 
 #endif
+
