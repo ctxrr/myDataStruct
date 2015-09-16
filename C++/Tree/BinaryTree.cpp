@@ -13,6 +13,10 @@ int main(int argc, char const* argv[])
     auto r7 = tr1.add_right(r3,7);
     auto r8 = tr1.add_left(r4,8);
     tr1.preorder(tr1.root);
+    std::cout<<std::endl;
+    tr1.inorder(tr1.root);
+    std::cout<<std::endl;
+    tr1.postorder(tr1.root);
 
     return 0;
 }

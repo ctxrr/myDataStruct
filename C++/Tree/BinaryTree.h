@@ -35,6 +35,8 @@ class BinaryTree : public Tree<T>
         BTNode<T> *add_left(BTNode<T> *n,const T &item);
         BTNode<T> *add_right(BTNode<T> *n,const T &item);
         void preorder(BTNode<T> *root);
+        void inorder(BTNode<T> *root);
+        void postorder(BTNode<T> *root);
 };
 
 template<typename T>
@@ -96,6 +98,28 @@ BinaryTree<T>::preorder(BTNode<T> *root)
         preorder(root->left);
     if(root->right)
         preorder(root->right);
+}
+
+template<typename T>
+void
+BinaryTree<T>::inorder(BTNode<T> *root)
+{
+    if(root->left)
+        inorder(root->left);
+    std::cout<<root->element;
+    if(root->right)
+        inorder(root->right);
+}
+
+template<typename T>
+void
+BinaryTree<T>::postorder(BTNode<T> *root)
+{
+    if(root->left)
+        postorder(root->left);
+    if(root->right)
+        postorder(root->right);
+    std::cout<<root->element;
 }
 
 #endif
